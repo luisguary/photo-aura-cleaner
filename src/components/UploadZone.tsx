@@ -34,13 +34,13 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 
   return (
     <div 
-      className="flex justify-center items-center"
+      className="flex justify-center items-center w-full"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-6 py-4 text-base flex flex-col gap-1"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-12 py-4 text-base flex flex-col gap-1 w-full max-w-md"
         onClick={() => document.getElementById('fileInput')?.click()}
       >
         <Upload className="w-6 h-6" />
