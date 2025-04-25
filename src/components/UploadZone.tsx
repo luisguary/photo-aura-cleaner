@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
 
@@ -33,16 +34,16 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 
   return (
     <div 
-      className="flex justify-center items-center w-full"
+      className="flex justify-center items-center"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-8 py-6 text-lg flex flex-col gap-2"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-6 py-4 text-base flex flex-col gap-1"
         onClick={() => document.getElementById('fileInput')?.click()}
       >
-        <Upload className="w-8 h-8" />
+        <Upload className="w-6 h-6" />
         Seleccionar Imagen
       </Button>
       <input
@@ -57,4 +58,3 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 };
 
 export default UploadZone;
-
