@@ -35,3 +35,4 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
     throw error;
   }
 };
+
