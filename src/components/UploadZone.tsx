@@ -40,11 +40,11 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     >
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-12 py-4 text-base flex flex-col gap-1 w-full max-w-md"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-16 py-5 text-lg flex flex-col gap-2 w-full max-w-md"
         onClick={() => document.getElementById('fileInput')?.click()}
       >
-        <Upload className="w-6 h-6" />
-        Seleccionar Imagen
+        <Upload className="w-7 h-7" />
+        Seleccionar una imagen para editar
       </Button>
       <input
         id="fileInput"
@@ -58,3 +58,4 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 };
 
 export default UploadZone;
+
