@@ -1,9 +1,10 @@
 
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, Wand, RotateCcw, Download, Loader } from 'lucide-react';
+import { Eraser, RotateCcw, Download, Loader } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
 import { toast } from './ui/use-toast';
+import BackgroundSelector from './BackgroundSelector';
 
 interface ImageEditorProps {
   initialImage: string;
@@ -14,6 +15,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>('');
+  const [selectedBackground, setSelectedBackground] = useState<string>('transparent');
 
   const handleRemoveBackground = async () => {
     try {
@@ -50,16 +52,50 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = editedImage || initialImage;
-    link.download = 'imagen-sin-fondo.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      if (ctx) {
+        // Fill with selected background if not transparent
+        if (selectedBackground !== 'transparent') {
+          ctx.fillStyle = selectedBackground;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+
+        // Add watermark
+        ctx.font = '16px Arial';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+
+        // Convert to blob and download
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `imagen-sin-fondo${selectedBackground === 'transparent' ? '.png' : '.jpg'}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg');
+      }
+    };
+
+    img.src = editedImage || initialImage;
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div className="flex flex-wrap gap-2 mb-4">
         <Button
           variant="outline"
@@ -93,25 +129,44 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       </div>
 
       <div className="relative rounded-lg overflow-hidden border border-gray-200">
-        <img
-          src={editedImage || initialImage}
-          alt="Imagen siendo editada"
-          className="max-w-full h-auto"
-          style={{
-            opacity: isProcessing ? 0.5 : 1,
+        <div 
+          className="relative" 
+          style={{ 
+            backgroundColor: selectedBackground,
+            backgroundImage: selectedBackground === 'transparent' ? 
+              'linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%)' : 
+              'none',
+            backgroundSize: '20px 20px',
+            backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
           }}
-        />
-        {isProcessing && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9b87f5] mb-2"></div>
-            {progress && (
-              <div className="text-white bg-black/50 px-4 py-2 rounded-lg">
-                {progress}
-              </div>
-            )}
-          </div>
-        )}
+        >
+          <img
+            src={editedImage || initialImage}
+            alt="Imagen siendo editada"
+            className="max-w-full h-auto"
+            style={{
+              opacity: isProcessing ? 0.5 : 1,
+            }}
+          />
+          {isProcessing && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9b87f5] mb-2"></div>
+              {progress && (
+                <div className="text-white bg-black/50 px-4 py-2 rounded-lg">
+                  {progress}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {editedImage && (
+        <BackgroundSelector
+          selectedBackground={selectedBackground}
+          onSelectBackground={setSelectedBackground}
+        />
+      )}
     </div>
   );
 };
