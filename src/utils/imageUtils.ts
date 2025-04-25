@@ -43,9 +43,10 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
       console.log('Intentando cargar el modelo con WebGPU...');
       segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
         device: 'webgpu',
-        progress_callback: (progressInfo) => {
-          const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-          console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
+        progress_callback: (progressInfo: any) => {
+          const progressValue = progressInfo && typeof progressInfo === 'object' ? 
+            ('status' in progressInfo ? 0.5 : (progressInfo.value !== undefined ? progressInfo.value : 0)) : 0;
+          console.log(`Cargando modelo: ${Math.round(progressValue * 100)}%`);
         }
       });
     } catch (gpuError) {
@@ -54,9 +55,10 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
         // Usar CPU como alternativa (reemplazando WebGL)
         segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
           device: 'cpu',
-          progress_callback: (progressInfo) => {
-            const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-            console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
+          progress_callback: (progressInfo: any) => {
+            const progressValue = progressInfo && typeof progressInfo === 'object' ? 
+              ('status' in progressInfo ? 0.5 : (progressInfo.value !== undefined ? progressInfo.value : 0)) : 0;
+            console.log(`Cargando modelo: ${Math.round(progressValue * 100)}%`);
           }
         });
       } catch (cpuError) {
@@ -64,9 +66,10 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
         // Si CPU tampoco funciona, usar WASM como última opción
         segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
           device: 'wasm',
-          progress_callback: (progressInfo) => {
-            const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-            console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
+          progress_callback: (progressInfo: any) => {
+            const progressValue = progressInfo && typeof progressInfo === 'object' ? 
+              ('status' in progressInfo ? 0.5 : (progressInfo.value !== undefined ? progressInfo.value : 0)) : 0;
+            console.log(`Cargando modelo: ${Math.round(progressValue * 100)}%`);
           }
         });
       }
