@@ -32,29 +32,29 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
   };
 
   return (
-    <div className="flex justify-center my-8">
-      <div
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
+    <div 
+      className="flex justify-center items-center w-full"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <Button
+        variant="default"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-8 py-6 text-lg flex flex-col gap-2"
+        onClick={() => document.getElementById('fileInput')?.click()}
       >
-        <Button
-          variant="default"
-          className="bg-[#9b87f5] hover:bg-[#8b77e5] px-8 py-6 text-lg flex flex-col gap-2"
-          onClick={() => document.getElementById('fileInput')?.click()}
-        >
-          <Upload className="w-8 h-8" />
-          Seleccionar Imagen
-        </Button>
-        <input
-          id="fileInput"
-          type="file"
-          className="hidden"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-      </div>
+        <Upload className="w-8 h-8" />
+        Seleccionar Imagen
+      </Button>
+      <input
+        id="fileInput"
+        type="file"
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
     </div>
   );
 };
 
 export default UploadZone;
+
