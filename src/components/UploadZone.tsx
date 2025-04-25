@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
@@ -58,4 +57,3 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 };
 
 export default UploadZone;
-
