@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
@@ -6,6 +7,9 @@ import { upscaleImage } from '../utils/upscaleUtils';
 import { toast } from './ui/use-toast';
 import BackgroundSelector from './BackgroundSelector';
 import ImageActions from './ImageActions';
+import CropDialog from './CropDialog';
+import ResizeDialog from './ResizeDialog';
+import EditDialog from './EditDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 
@@ -28,14 +32,19 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [isQualityDialogOpen, setIsQualityDialogOpen] = useState(false);
   const [isProcessingAd, setIsProcessingAd] = useState(false);
+  
+  // New state for the image operation dialogs
+  const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
+  const [isResizeDialogOpen, setIsResizeDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleRemoveBackground = async () => {
     try {
       setIsProcessing(true);
-      setProgress('Procesando imagen...');
+      setProgress('Processing image...');
       toast({
-        title: "Procesando imagen...",
-        description: "Esto puede tomar unos segundos.",
+        title: "Processing image...",
+        description: "This may take a few seconds.",
       });
 
       const img = new Image();
@@ -47,15 +56,15 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       setEditedImage(resultUrl);
 
       toast({
-        title: "¡Listo!",
-        description: "El fondo ha sido removido exitosamente",
+        title: "Done!",
+        description: "Background has been successfully removed",
       });
     } catch (error) {
-      console.error('Error al procesar la imagen:', error);
+      console.error('Error processing image:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Hubo un problema al procesar la imagen. Por favor, intenta de nuevo.",
+        description: "There was a problem processing the image. Please try again.",
       });
     } finally {
       setIsProcessing(false);
@@ -66,7 +75,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const handleUpscale = async (scale: number) => {
     try {
       setIsProcessing(true);
-      setProgress(`Ampliando imagen a ${scale}x...`);
+      setProgress(`Upscaling image to ${scale}x...`);
 
       const imageToUpscale = editedImage || initialImage;
       
@@ -86,16 +95,16 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         }
         
         toast({
-          title: "¡Listo!",
-          description: `Imagen ampliada a ${scale}x exitosamente`,
+          title: "Done!",
+          description: `Image successfully upscaled to ${scale}x`,
         });
       }
     } catch (error) {
-      console.error('Error al ampliar la imagen:', error);
+      console.error('Error upscaling image:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Hubo un problema al ampliar la imagen. Por favor, intenta de nuevo.",
+        description: "There was a problem upscaling the image. Please try again.",
       });
     } finally {
       setIsProcessing(false);
@@ -104,23 +113,38 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   };
 
   const handleCrop = () => {
+    setIsCropDialogOpen(true);
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setEditedImage(croppedImageUrl);
     toast({
-      title: "Próximamente",
-      description: "La función de recorte estará disponible pronto.",
+      title: "Image Cropped",
+      description: "Your image has been successfully cropped.",
     });
   };
 
   const handleResize = () => {
+    setIsResizeDialogOpen(true);
+  };
+
+  const handleResizeComplete = (resizedImageUrl: string) => {
+    setEditedImage(resizedImageUrl);
     toast({
-      title: "Próximamente",
-      description: "La función de reducción de tamaño estará disponible pronto.",
+      title: "Image Resized",
+      description: "Your image has been successfully resized.",
     });
   };
 
   const handleEdit = () => {
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditComplete = (editedImageUrl: string) => {
+    setEditedImage(editedImageUrl);
     toast({
-      title: "Próximamente",
-      description: "La función de edición estará disponible pronto.",
+      title: "Image Edited",
+      description: "Your image edits have been applied.",
     });
   };
 
@@ -128,8 +152,8 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     if (isPremiumUser) {
       setShowWatermark(false);
       toast({
-        title: "Usuario Premium",
-        description: "Marca de agua eliminada automáticamente",
+        title: "Premium User",
+        description: "Watermark automatically removed",
       });
     } else {
       setIsWatermarkDialogOpen(true);
@@ -138,7 +162,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
 
   const handleWatchAd = () => {
     setIsWatermarkDialogOpen(false);
-    setProgress('Cargando anuncio...');
+    setProgress('Loading ad...');
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
@@ -151,8 +175,8 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     setIsAdWatchedDialogOpen(false);
     setShowWatermark(false);
     toast({
-      title: "¡Gracias!",
-      description: "Marca de agua eliminada correctamente",
+      title: "Thank you!",
+      description: "Watermark successfully removed",
     });
   };
 
@@ -161,8 +185,8 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     setIsPremiumUser(true);
     setShowWatermark(false);
     toast({
-      title: "¡Bienvenido a Premium!",
-      description: "Ahora eres usuario Premium y no verás marcas de agua",
+      title: "Welcome to Premium!",
+      description: "You are now a Premium user and won't see watermarks",
     });
   };
 
@@ -199,7 +223,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
             if (!isHighQuality && showWatermark) {
               ctx.font = '16px Arial';
               ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-              ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+              ctx.fillText('Remove Background Pro', 10, canvas.height - 10);
             }
 
             exportImage(canvas, isHighQuality);
@@ -216,7 +240,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           if (!isHighQuality && showWatermark) {
             ctx.font = '16px Arial';
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+            ctx.fillText('Remove Background Pro', 10, canvas.height - 10);
           }
 
           exportImage(canvas, isHighQuality);
@@ -236,17 +260,17 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `imagen-sin-fondo${format === 'image/png' ? '.png' : '.jpg'}`;
+        link.download = `image-no-bg${format === 'image/png' ? '.png' : '.jpg'}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
 
         toast({
-          title: "¡Descarga completada!",
+          title: "Download complete!",
           description: isHighQuality 
-            ? "Imagen exportada en máxima calidad" 
-            : "Imagen exportada en calidad estándar",
+            ? "Image exported in maximum quality" 
+            : "Image exported in standard quality",
         });
       }
     }, format, quality);
@@ -263,15 +287,15 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const handleWatchAdForQuality = () => {
     setIsQualityDialogOpen(false);
     setIsProcessingAd(true);
-    setProgress('Cargando anuncio...');
+    setProgress('Loading ad...');
     
     setTimeout(() => {
       setIsProcessingAd(false);
       setProgress('');
       handleDownload(true);
       toast({
-        title: "¡Gracias por ver el anuncio!",
-        description: "Tu imagen se descargará en máxima calidad",
+        title: "Thank you for watching the ad!",
+        description: "Your image will download in maximum quality",
       });
     }, 2000);
   };
@@ -281,8 +305,8 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     setIsPremiumUser(true);
     handleDownload(true);
     toast({
-      title: "¡Bienvenido a Premium!",
-      description: "Ahora puedes descargar todas tus imágenes en máxima calidad",
+      title: "Welcome to Premium!",
+      description: "You can now download all your images in maximum quality",
     });
   };
 
@@ -304,7 +328,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           ) : (
             <Eraser className="w-4 h-4 mr-2" />
           )}
-          Remover Fondo
+          Remove Background
         </Button>
         <Button
           variant="outline"
@@ -312,7 +336,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           disabled={isProcessing}
         >
           <RotateCcw className="w-4 h-4 mr-2" />
-          Reiniciar
+          Reset
         </Button>
         <Button
           variant="default"
@@ -321,7 +345,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           disabled={isProcessing || isProcessingAd}
         >
           <Download className="w-4 h-4 mr-2" />
-          {isPremiumUser ? 'Descargar en Alta Calidad' : 'Descargar'}
+          {isPremiumUser ? 'Download in High Quality' : 'Download'}
         </Button>
       </div>
 
@@ -350,7 +374,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         >
           <img
             src={editedImage || initialImage}
-            alt="Imagen siendo editada"
+            alt="Image being edited"
             className="max-w-full h-auto"
             style={{
               opacity: isProcessing ? 0.5 : 1,
@@ -369,7 +393,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           
           {editedImage && showWatermark && (
             <div className="absolute bottom-2 right-2 bg-black/40 text-white px-3 py-1 rounded flex items-center">
-              <span className="text-sm mr-2">Quitar Fondo Pro</span>
+              <span className="text-sm mr-2">Remove Background Pro</span>
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -391,12 +415,36 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         />
       )}
 
+      {/* Crop Dialog */}
+      <CropDialog
+        open={isCropDialogOpen}
+        onOpenChange={setIsCropDialogOpen}
+        imageUrl={editedImage || initialImage}
+        onCropComplete={handleCropComplete}
+      />
+
+      {/* Resize Dialog */}
+      <ResizeDialog
+        open={isResizeDialogOpen}
+        onOpenChange={setIsResizeDialogOpen}
+        imageUrl={editedImage || initialImage}
+        onResizeComplete={handleResizeComplete}
+      />
+
+      {/* Edit Dialog */}
+      <EditDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        imageUrl={editedImage || initialImage}
+        onEditComplete={handleEditComplete}
+      />
+
       <Dialog open={isWatermarkDialogOpen} onOpenChange={setIsWatermarkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Eliminar marca de agua</DialogTitle>
+            <DialogTitle>Remove Watermark</DialogTitle>
             <DialogDescription>
-              Mira un anuncio para eliminar la marca de agua, o hazte usuario Premium.
+              Watch an ad to remove the watermark, or become a Premium user.
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 gap-4 py-4">
@@ -405,26 +453,35 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
               className="w-full" 
               onClick={handleWatchAd}
             >
-              Ver anuncio para quitar marca de agua
+              Watch ad to remove watermark
             </Button>
             <Button 
               variant="default" 
               className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
               onClick={handleBePremium}
             >
-              Hazte usuario Premium
+              Become Premium user
             </Button>
           </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute right-4 top-4 rounded-full" 
+            onClick={() => setIsWatermarkDialogOpen(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isQualityDialogOpen} onOpenChange={setIsQualityDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Descarga en Alta Calidad</DialogTitle>
+            <DialogTitle>High Quality Download</DialogTitle>
             <DialogDescription>
-              ¿Quieres descargar la imagen en máxima calidad sin marca de agua? 
-              Mira un anuncio o hazte Premium.
+              Want to download the image in maximum quality without a watermark? 
+              Watch an ad or become Premium.
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 gap-4 py-4">
@@ -433,29 +490,38 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
               className="w-full" 
               onClick={handleWatchAdForQuality}
             >
-              Ver anuncio para descarga en alta calidad
+              Watch ad for high quality download
             </Button>
             <Button 
               variant="default" 
               className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
               onClick={handleBePremiumForQuality}
             >
-              Hazte usuario Premium
+              Become Premium user
             </Button>
           </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute right-4 top-4 rounded-full" 
+            onClick={() => setIsQualityDialogOpen(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
         </DialogContent>
       </Dialog>
 
       <AlertDialog open={isAdWatchedDialogOpen} onOpenChange={setIsAdWatchedDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¡Anuncio completado!</AlertDialogTitle>
+            <AlertDialogTitle>Ad Completed!</AlertDialogTitle>
             <AlertDialogDescription>
-              Gracias por ver el anuncio. La marca de agua será eliminada.
+              Thank you for watching the ad. The watermark will be removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleAdWatched}>Continuar</AlertDialogAction>
+            <AlertDialogAction onClick={handleAdWatched}>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

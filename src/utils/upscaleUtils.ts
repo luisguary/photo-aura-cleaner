@@ -23,13 +23,13 @@ export const upscaleImage = async (imageBlob: Blob, scale: number): Promise<Blob
     });
     
     if (!response.ok) {
-      throw new Error(`Error en la API: ${response.statusText}`);
+      throw new Error(`API Error: ${response.statusText}`);
     }
     
     const data = await response.json();
     
     if (!data.output_url) {
-      throw new Error('La API no devolvió una URL de imagen');
+      throw new Error('The API did not return an image URL');
     }
     
     // Download the upscaled image
@@ -38,11 +38,11 @@ export const upscaleImage = async (imageBlob: Blob, scale: number): Promise<Blob
     
     return upscaledBlob;
   } catch (error) {
-    console.error('Error al ampliar la imagen:', error);
+    console.error('Error upscaling image:', error);
     toast({
       variant: "destructive",
       title: "Error",
-      description: "No se pudo ampliar la imagen. Por favor, intenta de nuevo.",
+      description: "Could not upscale the image. Please try again.",
     });
     return null;
   }
