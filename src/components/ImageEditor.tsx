@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, Wand, RotateCcw, Download } from 'lucide-react';
+import { Eraser, Wand, RotateCcw, Download, Loader } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
 import { toast } from '../components/ui/use-toast';
 
@@ -39,7 +39,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Hubo un problema al procesar la imagen",
+        description: "Hubo un problema al procesar la imagen. Por favor, intenta de nuevo.",
       });
     } finally {
       setIsProcessing(false);
@@ -49,7 +49,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = editedImage || initialImage;
-    link.download = 'imagen-editada.png';
+    link.download = 'imagen-sin-fondo.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -63,7 +63,11 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           onClick={handleRemoveBackground}
           disabled={isProcessing}
         >
-          <Wand className="w-4 h-4 mr-2" />
+          {isProcessing ? (
+            <Loader className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Wand className="w-4 h-4 mr-2" />
+          )}
           Remover Fondo
         </Button>
         <Button
