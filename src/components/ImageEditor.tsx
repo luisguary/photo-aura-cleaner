@@ -18,17 +18,16 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const handleRemoveBackground = async () => {
     try {
       setIsProcessing(true);
-      setProgress('Cargando modelo...');
+      setProgress('Procesando imagen...');
       toast({
         title: "Procesando imagen...",
-        description: "Esto puede tomar unos minutos. El modelo se está descargando.",
+        description: "Esto puede tomar unos segundos.",
       });
 
       const img = new Image();
       img.src = initialImage;
       await new Promise((resolve) => (img.onload = resolve));
 
-      setProgress('Removiendo fondo...');
       const resultBlob = await removeBackground(img);
       const resultUrl = URL.createObjectURL(resultBlob);
       setEditedImage(resultUrl);
@@ -70,7 +69,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           {isProcessing ? (
             <Loader className="w-4 h-4 mr-2 animate-spin" />
           ) : (
-            <Wand className="w-4 h-4 mr-2" />
+            <Eraser className="w-4 h-4 mr-2" />
           )}
           Remover Fondo
         </Button>
