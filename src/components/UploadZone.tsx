@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
@@ -40,11 +39,11 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     >
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-16 py-5 text-lg flex flex-col gap-2 w-full max-w-md"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-20 py-6 text-lg flex flex-col items-center justify-center gap-3 w-full max-w-xl text-center"
         onClick={() => document.getElementById('fileInput')?.click()}
       >
-        <Upload className="w-7 h-7" />
-        Seleccionar una imagen para editar
+        <Upload className="w-8 h-8 mb-2" />
+        <span className="text-center">Seleccionar una imagen para editar</span>
       </Button>
       <input
         id="fileInput"
@@ -58,4 +57,3 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 };
 
 export default UploadZone;
-
