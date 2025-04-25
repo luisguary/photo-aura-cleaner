@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
@@ -23,6 +22,8 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const [isWatermarkDialogOpen, setIsWatermarkDialogOpen] = useState(false);
   const [isAdWatchedDialogOpen, setIsAdWatchedDialogOpen] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [isQualityDialogOpen, setIsQualityDialogOpen] = useState(false);
+  const [isProcessingAd, setIsProcessingAd] = useState(false);
 
   const handleRemoveBackground = async () => {
     try {
@@ -71,14 +72,9 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   };
 
   const handleWatchAd = () => {
-    // Close the watermark dialog
     setIsWatermarkDialogOpen(false);
-    
-    // Simulate ad loading
     setProgress('Cargando anuncio...');
     setIsProcessing(true);
-    
-    // Simulate watching an ad (would be replaced with actual AdMob implementation)
     setTimeout(() => {
       setIsProcessing(false);
       setProgress('');
@@ -105,14 +101,24 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
     });
   };
 
-  const handleDownload = () => {
+  const handleDownload = async (isHighQuality: boolean = false) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const img = new Image();
 
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
+      const maxDimension = isHighQuality ? 3840 : 1280;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxDimension || height > maxDimension) {
+        const ratio = Math.min(maxDimension / width, maxDimension / height);
+        width *= ratio;
+        height *= ratio;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
 
       if (ctx) {
         if (customBackground) {
@@ -123,61 +129,96 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
             const y = (canvas.height - bgImg.height * scale) / 2;
             ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
             
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, width, height);
             
-            // Add watermark if needed
-            if (showWatermark) {
+            if (!isHighQuality && showWatermark) {
               ctx.font = '16px Arial';
               ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
               ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
             }
 
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'imagen-con-fondo.jpg';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-              }
-            }, 'image/jpeg');
+            exportImage(canvas, isHighQuality);
           };
           bgImg.src = customBackground;
         } else {
           if (selectedBackground !== 'transparent') {
             ctx.fillStyle = selectedBackground;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, width, height);
           }
 
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0, width, height);
 
-          // Add watermark if needed
-          if (showWatermark) {
+          if (!isHighQuality && showWatermark) {
             ctx.font = '16px Arial';
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
           }
 
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `imagen-sin-fondo${selectedBackground === 'transparent' ? '.png' : '.jpg'}`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-            }
-          }, selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg');
+          exportImage(canvas, isHighQuality);
         }
       }
     };
 
     img.src = editedImage || initialImage;
+  };
+
+  const exportImage = (canvas: HTMLCanvasElement, isHighQuality: boolean) => {
+    const format = selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg';
+    const quality = isHighQuality ? 1.0 : 0.8;
+    
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `imagen-sin-fondo${format === 'image/png' ? '.png' : '.jpg'}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast({
+          title: "¡Descarga completada!",
+          description: isHighQuality 
+            ? "Imagen exportada en máxima calidad" 
+            : "Imagen exportada en calidad estándar",
+        });
+      }
+    }, format, quality);
+  };
+
+  const handleQualityDownload = () => {
+    if (isPremiumUser) {
+      handleDownload(true);
+    } else {
+      setIsQualityDialogOpen(true);
+    }
+  };
+
+  const handleWatchAdForQuality = () => {
+    setIsQualityDialogOpen(false);
+    setIsProcessingAd(true);
+    setProgress('Cargando anuncio...');
+    
+    setTimeout(() => {
+      setIsProcessingAd(false);
+      setProgress('');
+      handleDownload(true);
+      toast({
+        title: "¡Gracias por ver el anuncio!",
+        description: "Tu imagen se descargará en máxima calidad",
+      });
+    }, 2000);
+  };
+
+  const handleBePremiumForQuality = () => {
+    setIsQualityDialogOpen(false);
+    setIsPremiumUser(true);
+    handleDownload(true);
+    toast({
+      title: "¡Bienvenido a Premium!",
+      description: "Ahora puedes descargar todas tus imágenes en máxima calidad",
+    });
   };
 
   const handleCustomBackground = (imageUrl: string) => {
@@ -211,11 +252,11 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
         <Button
           variant="default"
           className="bg-[#9b87f5] hover:bg-[#8b77e5]"
-          onClick={handleDownload}
-          disabled={isProcessing}
+          onClick={handleQualityDownload}
+          disabled={isProcessing || isProcessingAd}
         >
           <Download className="w-4 h-4 mr-2" />
-          Descargar
+          {isPremiumUser ? 'Descargar en Alta Calidad' : 'Descargar'}
         </Button>
       </div>
 
@@ -251,7 +292,6 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
             </div>
           )}
           
-          {/* Watermark with X button */}
           {editedImage && showWatermark && (
             <div className="absolute bottom-2 right-2 bg-black/40 text-white px-3 py-1 rounded flex items-center">
               <span className="text-sm mr-2">Quitar Fondo Pro</span>
@@ -276,7 +316,6 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
         />
       )}
 
-      {/* Watermark removal dialog */}
       <Dialog open={isWatermarkDialogOpen} onOpenChange={setIsWatermarkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -304,7 +343,34 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Ad watched confirmation */}
+      <Dialog open={isQualityDialogOpen} onOpenChange={setIsQualityDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Descarga en Alta Calidad</DialogTitle>
+            <DialogDescription>
+              ¿Quieres descargar la imagen en máxima calidad sin marca de agua? 
+              Mira un anuncio o hazte Premium.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 gap-4 py-4">
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleWatchAdForQuality}
+            >
+              Ver anuncio para descarga en alta calidad
+            </Button>
+            <Button 
+              variant="default" 
+              className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
+              onClick={handleBePremiumForQuality}
+            >
+              Hazte usuario Premium
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <AlertDialog open={isAdWatchedDialogOpen} onOpenChange={setIsAdWatchedDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
