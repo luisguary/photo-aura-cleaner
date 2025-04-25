@@ -1,14 +1,22 @@
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { Upload } from "lucide-react";
 
 interface BackgroundSelectorProps {
   onSelectBackground: (color: string) => void;
+  onSelectCustomBackground: (imageUrl: string) => void;
   selectedBackground: string;
 }
 
-const BackgroundSelector = ({ onSelectBackground, selectedBackground }: BackgroundSelectorProps) => {
+const BackgroundSelector = ({ 
+  onSelectBackground, 
+  onSelectCustomBackground, 
+  selectedBackground 
+}: BackgroundSelectorProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const backgrounds = [
     { id: 'transparent', label: 'Transparente', value: 'transparent' },
     { id: 'white', label: 'Blanco', value: '#FFFFFF' },
@@ -18,13 +26,21 @@ const BackgroundSelector = ({ onSelectBackground, selectedBackground }: Backgrou
     { id: 'green', label: 'Verde', value: '#34c759' },
   ];
 
+  const handleCustomBackgroundSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      onSelectCustomBackground(imageUrl);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Label className="text-base font-semibold">Seleccionar fondo</Label>
       <RadioGroup
         value={selectedBackground}
         onValueChange={onSelectBackground}
-        className="grid grid-cols-3 gap-4"
+        className="grid grid-cols-2 md:grid-cols-3 gap-4"
       >
         {backgrounds.map(({ id, label, value }) => (
           <div
@@ -52,8 +68,27 @@ const BackgroundSelector = ({ onSelectBackground, selectedBackground }: Backgrou
           </div>
         ))}
       </RadioGroup>
+
+      <div className="pt-2">
+        <Button
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+          className="w-full"
+        >
+          <Upload className="w-4 h-4 mr-2" />
+          Subir fondo personalizado
+        </Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleCustomBackgroundSelect}
+        />
+      </div>
     </div>
   );
 };
 
 export default BackgroundSelector;
+

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, RotateCcw, Download, Loader } from 'lucide-react';
@@ -16,6 +15,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>('');
   const [selectedBackground, setSelectedBackground] = useState<string>('transparent');
+  const [customBackground, setCustomBackground] = useState<string | null>(null);
 
   const handleRemoveBackground = async () => {
     try {
@@ -61,37 +61,68 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       canvas.height = img.height;
 
       if (ctx) {
-        // Fill with selected background if not transparent
-        if (selectedBackground !== 'transparent') {
-          ctx.fillStyle = selectedBackground;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        if (customBackground) {
+          const bgImg = new Image();
+          bgImg.onload = () => {
+            const scale = Math.max(canvas.width / bgImg.width, canvas.height / bgImg.height);
+            const x = (canvas.width - bgImg.width * scale) / 2;
+            const y = (canvas.height - bgImg.height * scale) / 2;
+            ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+            
+            ctx.drawImage(img, 0, 0);
+            
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
 
-        // Draw the image
-        ctx.drawImage(img, 0, 0);
-
-        // Add watermark
-        ctx.font = '16px Arial';
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
-
-        // Convert to blob and download
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `imagen-sin-fondo${selectedBackground === 'transparent' ? '.png' : '.jpg'}`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'imagen-con-fondo.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+              }
+            }, 'image/jpeg');
+          };
+          bgImg.src = customBackground;
+        } else {
+          if (selectedBackground !== 'transparent') {
+            ctx.fillStyle = selectedBackground;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
           }
-        }, selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg');
+
+          ctx.drawImage(img, 0, 0);
+
+          ctx.font = '16px Arial';
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `imagen-sin-fondo${selectedBackground === 'transparent' ? '.png' : '.jpg'}`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            }
+          }, selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg');
+        }
       }
     };
 
     img.src = editedImage || initialImage;
+  };
+
+  const handleCustomBackground = (imageUrl: string) => {
+    setCustomBackground(imageUrl);
+    setSelectedBackground('custom');
   };
 
   return (
@@ -132,12 +163,13 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
         <div 
           className="relative" 
           style={{ 
-            backgroundColor: selectedBackground,
+            backgroundColor: selectedBackground === 'custom' ? 'transparent' : selectedBackground,
             backgroundImage: selectedBackground === 'transparent' ? 
               'linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%)' : 
-              'none',
-            backgroundSize: '20px 20px',
-            backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
+              customBackground ? `url(${customBackground})` : 'none',
+            backgroundSize: selectedBackground === 'transparent' ? '20px 20px' : 'cover',
+            backgroundPosition: selectedBackground === 'transparent' ? '0 0, 0 10px, 10px -10px, -10px 0px' : 'center',
+            backgroundRepeat: 'no-repeat'
           }}
         >
           <img
@@ -165,6 +197,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
         <BackgroundSelector
           selectedBackground={selectedBackground}
           onSelectBackground={setSelectedBackground}
+          onSelectCustomBackground={handleCustomBackground}
         />
       )}
     </div>
