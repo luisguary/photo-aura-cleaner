@@ -16,15 +16,15 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-gray-300 rounded-lg p-8">
-      <Image className="w-16 h-16 text-gray-400 mb-4" />
-      <h2 className="text-xl font-semibold mb-2">Sube tu imagen</h2>
-      <p className="text-gray-500 mb-4 text-center">
+    <div className="flex flex-col items-center justify-center min-h-[250px] border-2 border-dashed border-gray-300 rounded-lg p-4 space-y-3">
+      <Image className="w-12 h-12 text-gray-400" />
+      <h2 className="text-lg font-semibold text-center">Sube tu imagen</h2>
+      <p className="text-sm text-gray-500 text-center mb-2">
         Arrastra y suelta una imagen aquí o haz clic para seleccionar
       </p>
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5]"
+        className="bg-[#9b87f5] hover:bg-[#8b77e5] mt-2"
         onClick={() => document.getElementById('fileInput')?.click()}
       >
         Seleccionar Imagen
@@ -41,3 +41,4 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
 };
 
 export default UploadZone;
+
