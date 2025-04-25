@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
@@ -43,7 +44,7 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
         onClick={() => document.getElementById('fileInput')?.click()}
       >
         <Upload className="w-8 h-8 mb-2" />
-        <span className="-mt-2 text-center">Seleccionar una imagen para editar</span>
+        <span className="-mt-3 text-center">Seleccionar una imagen para editar</span>
       </Button>
       <input
         id="fileInput"
