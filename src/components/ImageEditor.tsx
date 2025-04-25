@@ -23,36 +23,42 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       setIsProcessing(true);
       setProgress(0);
       
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 10, 90));
-      }, 500);
-
       toast({
         title: "Procesando imagen...",
-        description: "Esto puede tomar unos segundos",
+        description: "Cargando modelos de AI. Este proceso puede tomar hasta 30 segundos la primera vez.",
       });
+      
+      // Simular progreso mientras se carga el modelo
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) {
+            return prev;
+          }
+          return Math.min(prev + 5, 90);
+        });
+      }, 1000);
 
       const img = new Image();
       img.src = initialImage;
       await new Promise((resolve) => (img.onload = resolve));
 
       const resultBlob = await removeBackground(img);
+      clearInterval(progressInterval);
+      setProgress(100);
+      
       const resultUrl = URL.createObjectURL(resultBlob);
       setEditedImage(resultUrl);
-      setProgress(100);
 
       toast({
         title: "¡Listo!",
         description: "El fondo ha sido removido exitosamente",
       });
-
-      clearInterval(progressInterval);
     } catch (error) {
       console.error('Error al procesar la imagen:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Hubo un problema al procesar la imagen",
+        description: "No se pudo procesar la imagen. Por favor, intente con otra imagen o actualice la página.",
       });
     } finally {
       setIsProcessing(false);
@@ -105,6 +111,10 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           <Progress value={progress} />
           <p className="text-sm text-muted-foreground text-center">
             Procesando imagen... {progress}%
+            {progress < 30 && " (Cargando modelo AI)"}
+            {progress >= 30 && progress < 70 && " (Analizando imagen)"}
+            {progress >= 70 && progress < 95 && " (Eliminando fondo)"}
+            {progress >= 95 && " (Finalizando)"}
           </p>
         </div>
       )}

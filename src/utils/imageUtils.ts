@@ -36,8 +36,37 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
   try {
     console.log('Iniciando proceso de remoción de fondo...');
     
-    // Intentar usar los backends disponibles en lugar de especificar WebGPU
-    const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512');
+    // Intentar cargar el modelo con diferentes configuraciones
+    let segmenter;
+    try {
+      // Intentar con WebGPU primero (mejor rendimiento si está disponible)
+      console.log('Intentando cargar el modelo con WebGPU...');
+      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+        device: 'webgpu',
+        progress_callback: (progress) => {
+          console.log(`Cargando modelo: ${Math.round(progress.progress * 100)}%`);
+        }
+      });
+    } catch (gpuError) {
+      console.log('No se pudo usar WebGPU, intentando con WebGL...');
+      try {
+        // Intentar con WebGL si WebGPU no está disponible
+        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+          device: 'webgl',
+          progress_callback: (progress) => {
+            console.log(`Cargando modelo: ${Math.round(progress.progress * 100)}%`);
+          }
+        });
+      } catch (webglError) {
+        console.log('No se pudo usar WebGL, intentando con WASM...');
+        // Si WebGL tampoco funciona, usar WASM como última opción
+        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+          progress_callback: (progress) => {
+            console.log(`Cargando modelo: ${Math.round(progress.progress * 100)}%`);
+          }
+        });
+      }
+    }
     
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
