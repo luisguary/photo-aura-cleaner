@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, Wand, RotateCcw, Download, Loader } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
-import { toast } from '../components/ui/use-toast';
+import { toast } from './ui/use-toast';
 
 interface ImageEditorProps {
   initialImage: string;
@@ -13,19 +13,22 @@ interface ImageEditorProps {
 const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedImage, setEditedImage] = useState<string | null>(null);
+  const [progress, setProgress] = useState<string>('');
 
   const handleRemoveBackground = async () => {
     try {
       setIsProcessing(true);
+      setProgress('Cargando modelo...');
       toast({
         title: "Procesando imagen...",
-        description: "Esto puede tomar unos segundos",
+        description: "Esto puede tomar unos minutos. El modelo se está descargando.",
       });
 
       const img = new Image();
       img.src = initialImage;
       await new Promise((resolve) => (img.onload = resolve));
 
+      setProgress('Removiendo fondo...');
       const resultBlob = await removeBackground(img);
       const resultUrl = URL.createObjectURL(resultBlob);
       setEditedImage(resultUrl);
@@ -43,6 +46,7 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       });
     } finally {
       setIsProcessing(false);
+      setProgress('');
     }
   };
 
@@ -99,8 +103,13 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           }}
         />
         {isProcessing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9b87f5]"></div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9b87f5] mb-2"></div>
+            {progress && (
+              <div className="text-white bg-black/50 px-4 py-2 rounded-lg">
+                {progress}
+              </div>
+            )}
           </div>
         )}
       </div>
