@@ -35,42 +35,9 @@ function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingCont
 export const removeBackground = async (imageElement: HTMLImageElement): Promise<Blob> => {
   try {
     console.log('Iniciando proceso de remoción de fondo...');
-    
-    // Intentar cargar el modelo con diferentes configuraciones
-    let segmenter;
-    try {
-      // Intentar con WebGPU primero (mejor rendimiento si está disponible)
-      console.log('Intentando cargar el modelo con WebGPU...');
-      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-        device: 'webgpu',
-        progress_callback: (progressInfo) => {
-          const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-          console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
-        }
-      });
-    } catch (gpuError) {
-      console.log('No se pudo usar WebGPU, intentando con CPU...');
-      try {
-        // Usar CPU como alternativa (reemplazando WebGL)
-        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-          device: 'cpu',
-          progress_callback: (progressInfo) => {
-            const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-            console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
-          }
-        });
-      } catch (cpuError) {
-        console.log('No se pudo usar CPU, intentando con WASM...');
-        // Si CPU tampoco funciona, usar WASM como última opción
-        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-          device: 'wasm',
-          progress_callback: (progressInfo) => {
-            const value = 'status' in progressInfo ? 0.5 : progressInfo.value || 0;
-            console.log(`Cargando modelo: ${Math.round(value * 100)}%`);
-          }
-        });
-      }
-    }
+    const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+      device: 'webgpu',
+    });
     
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
