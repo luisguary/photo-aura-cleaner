@@ -1,0 +1,59 @@
+
+import { toast } from "@/components/ui/use-toast";
+
+export const upscaleImage = async (imageBlob: Blob, scale: number): Promise<Blob | null> => {
+  try {
+    console.log(`Upscaling image to ${scale}x with API...`);
+    
+    // Convert image to base64
+    const base64 = await blobToBase64(imageBlob);
+    
+    // Create form data for API request
+    const formData = new FormData();
+    formData.append('image', base64);
+    formData.append('scale', scale.toString());
+    
+    // Call DeepAI Super Resolution API
+    const response = await fetch('https://api.deepai.org/api/torch-srgan', {
+      method: 'POST',
+      headers: {
+        'Api-Key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K' // Demo key, should be replaced with real key
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.output_url) {
+      throw new Error('La API no devolvió una URL de imagen');
+    }
+    
+    // Download the upscaled image
+    const upscaledResponse = await fetch(data.output_url);
+    const upscaledBlob = await upscaledResponse.blob();
+    
+    return upscaledBlob;
+  } catch (error) {
+    console.error('Error al ampliar la imagen:', error);
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "No se pudo ampliar la imagen. Por favor, intenta de nuevo.",
+    });
+    return null;
+  }
+};
+
+// Helper function to convert Blob to base64
+const blobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};

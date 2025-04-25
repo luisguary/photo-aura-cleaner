@@ -2,19 +2,23 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
+import { upscaleImage } from '../utils/upscaleUtils';
 import { toast } from './ui/use-toast';
 import BackgroundSelector from './BackgroundSelector';
+import ImageActions from './ImageActions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 
 interface ImageEditorProps {
   initialImage: string;
+  fileName: string;
   onReset: () => void;
 }
 
-const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
+const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedImage, setEditedImage] = useState<string | null>(null);
+  const [upscaledImage, setUpscaledImage] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>('');
   const [selectedBackground, setSelectedBackground] = useState<string>('transparent');
   const [customBackground, setCustomBackground] = useState<string | null>(null);
@@ -57,6 +61,67 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
       setIsProcessing(false);
       setProgress('');
     }
+  };
+
+  const handleUpscale = async (scale: number) => {
+    try {
+      setIsProcessing(true);
+      setProgress(`Ampliando imagen a ${scale}x...`);
+
+      const imageToUpscale = editedImage || initialImage;
+      
+      const response = await fetch(imageToUpscale);
+      const imageBlob = await response.blob();
+      
+      const upscaledBlob = await upscaleImage(imageBlob, scale);
+      
+      if (upscaledBlob) {
+        const upscaledUrl = URL.createObjectURL(upscaledBlob);
+        setUpscaledImage(upscaledUrl);
+        
+        if (editedImage) {
+          setEditedImage(upscaledUrl);
+        } else {
+          setEditedImage(upscaledUrl);
+        }
+        
+        toast({
+          title: "¡Listo!",
+          description: `Imagen ampliada a ${scale}x exitosamente`,
+        });
+      }
+    } catch (error) {
+      console.error('Error al ampliar la imagen:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Hubo un problema al ampliar la imagen. Por favor, intenta de nuevo.",
+      });
+    } finally {
+      setIsProcessing(false);
+      setProgress('');
+    }
+  };
+
+  const handleCrop = () => {
+    toast({
+      title: "Próximamente",
+      description: "La función de recorte estará disponible pronto.",
+    });
+  };
+
+  const handleResize = () => {
+    toast({
+      title: "Próximamente",
+      description: "La función de reducción de tamaño estará disponible pronto.",
+    });
+  };
+
+  const handleEdit = () => {
+    toast({
+      title: "Próximamente",
+      description: "La función de edición estará disponible pronto.",
+    });
   };
 
   const handleWatermarkRemoveClick = () => {
@@ -259,6 +324,16 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           {isPremiumUser ? 'Descargar en Alta Calidad' : 'Descargar'}
         </Button>
       </div>
+
+      {!isProcessing && (
+        <ImageActions 
+          onUpscale={handleUpscale}
+          onCrop={handleCrop}
+          onResize={handleResize}
+          onEdit={handleEdit}
+          isPremium={isPremiumUser}
+        />
+      )}
 
       <div className="relative rounded-lg overflow-hidden border border-gray-200">
         <div 

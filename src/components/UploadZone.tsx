@@ -1,18 +1,21 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
 
 interface UploadZoneProps {
-  onImageSelected: (imageUrl: string) => void;
+  onImageSelected: (imageUrl: string, fileName: string) => void;
 }
 
 const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      onImageSelected(imageUrl);
+      setSelectedFileName(file.name);
+      onImageSelected(imageUrl, file.name);
     }
   };
 
@@ -28,9 +31,14 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     const file = e.dataTransfer.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      onImageSelected(imageUrl);
+      setSelectedFileName(file.name);
+      onImageSelected(imageUrl, file.name);
     }
   };
+
+  const buttonStyles = selectedFileName 
+    ? "bg-[#28A745] hover:bg-[#218838]" 
+    : "bg-[#007BFF] hover:bg-[#339CFF]";
 
   return (
     <div 
@@ -40,11 +48,17 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     >
       <Button
         variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] px-20 py-6 text-lg flex flex-col items-center justify-center gap-3 w-full max-w-xl text-center"
+        className={`${buttonStyles} px-20 py-6 text-lg flex flex-col items-center justify-center gap-3 w-full max-w-xl text-center text-white font-semibold rounded-lg shadow-md transition-colors duration-300`}
         onClick={() => document.getElementById('fileInput')?.click()}
       >
         <Upload className="w-8 h-8 mb-2" />
-        <span className="-mt-2 text-white font-semibold text-center tracking-tight">Seleccionar una imagen para editar</span>
+        <span className="-mt-2 text-white font-semibold text-center tracking-tight">
+          {selectedFileName 
+            ? `Imagen seleccionada: ${selectedFileName.length > 20 
+                ? selectedFileName.substring(0, 17) + '...' 
+                : selectedFileName}`
+            : "Seleccionar una imagen para editar"}
+        </span>
       </Button>
       <input
         id="fileInput"

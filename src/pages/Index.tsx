@@ -8,6 +8,7 @@ import { Moon, Sun } from 'lucide-react';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
@@ -28,6 +29,11 @@ const Index = () => {
       }
     });
   }, []);
+
+  const handleImageSelected = (imageUrl: string, fileName: string) => {
+    setSelectedImage(imageUrl);
+    setSelectedFileName(fileName);
+  };
 
   return (
     <div className={`min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8`}>
@@ -64,11 +70,15 @@ const Index = () => {
         <Card className="bg-white dark:bg-[#2A2F3C] backdrop-blur-sm shadow-xl border-0">
           <CardContent className="p-6">
             {!selectedImage ? (
-              <UploadZone onImageSelected={setSelectedImage} />
+              <UploadZone onImageSelected={handleImageSelected} />
             ) : (
               <ImageEditor
                 initialImage={selectedImage}
-                onReset={() => setSelectedImage(null)}
+                fileName={selectedFileName || "imagen"}
+                onReset={() => {
+                  setSelectedImage(null);
+                  setSelectedFileName(null);
+                }}
               />
             )}
           </CardContent>
