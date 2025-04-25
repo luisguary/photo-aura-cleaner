@@ -1,6 +1,6 @@
 
-import { Image } from "lucide-react";
 import { Button } from "./ui/button";
+import { Upload } from "lucide-react";
 
 interface UploadZoneProps {
   onImageSelected: (imageUrl: string) => void;
@@ -15,30 +15,46 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     }
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      onImageSelected(imageUrl);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[250px] border-2 border-dashed border-gray-300 rounded-lg p-4 space-y-3">
-      <Image className="w-12 h-12 text-gray-400" />
-      <h2 className="text-lg font-semibold text-center">Sube tu imagen</h2>
-      <p className="text-sm text-gray-500 text-center mb-2">
-        Arrastra y suelta una imagen aquí o haz clic para seleccionar
-      </p>
-      <Button
-        variant="default"
-        className="bg-[#9b87f5] hover:bg-[#8b77e5] mt-2"
-        onClick={() => document.getElementById('fileInput')?.click()}
+    <div className="flex justify-center my-8">
+      <div
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
-        Seleccionar Imagen
-      </Button>
-      <input
-        id="fileInput"
-        type="file"
-        className="hidden"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
+        <Button
+          variant="default"
+          className="bg-[#9b87f5] hover:bg-[#8b77e5] px-8 py-6 text-lg flex flex-col gap-2"
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          <Upload className="w-8 h-8" />
+          Seleccionar Imagen
+        </Button>
+        <input
+          id="fileInput"
+          type="file"
+          className="hidden"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+      </div>
     </div>
   );
 };
 
 export default UploadZone;
-
