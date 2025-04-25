@@ -1,9 +1,12 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, RotateCcw, Download, Loader } from 'lucide-react';
+import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
 import { toast } from './ui/use-toast';
 import BackgroundSelector from './BackgroundSelector';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 
 interface ImageEditorProps {
   initialImage: string;
@@ -16,6 +19,10 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
   const [progress, setProgress] = useState<string>('');
   const [selectedBackground, setSelectedBackground] = useState<string>('transparent');
   const [customBackground, setCustomBackground] = useState<string | null>(null);
+  const [showWatermark, setShowWatermark] = useState(true);
+  const [isWatermarkDialogOpen, setIsWatermarkDialogOpen] = useState(false);
+  const [isAdWatchedDialogOpen, setIsAdWatchedDialogOpen] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
 
   const handleRemoveBackground = async () => {
     try {
@@ -51,6 +58,53 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
     }
   };
 
+  const handleWatermarkRemoveClick = () => {
+    if (isPremiumUser) {
+      setShowWatermark(false);
+      toast({
+        title: "Usuario Premium",
+        description: "Marca de agua eliminada automáticamente",
+      });
+    } else {
+      setIsWatermarkDialogOpen(true);
+    }
+  };
+
+  const handleWatchAd = () => {
+    // Close the watermark dialog
+    setIsWatermarkDialogOpen(false);
+    
+    // Simulate ad loading
+    setProgress('Cargando anuncio...');
+    setIsProcessing(true);
+    
+    // Simulate watching an ad (would be replaced with actual AdMob implementation)
+    setTimeout(() => {
+      setIsProcessing(false);
+      setProgress('');
+      setIsAdWatchedDialogOpen(true);
+    }, 2000);
+  };
+
+  const handleAdWatched = () => {
+    setIsAdWatchedDialogOpen(false);
+    setShowWatermark(false);
+    toast({
+      title: "¡Gracias!",
+      description: "Marca de agua eliminada correctamente",
+    });
+  };
+
+  const handleBePremium = () => {
+    setIsWatermarkDialogOpen(false);
+    setIsPremiumUser(true);
+    setShowWatermark(false);
+    toast({
+      title: "¡Bienvenido a Premium!",
+      description: "Ahora eres usuario Premium y no verás marcas de agua",
+    });
+  };
+
   const handleDownload = () => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -71,9 +125,12 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
             
             ctx.drawImage(img, 0, 0);
             
-            ctx.font = '16px Arial';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+            // Add watermark if needed
+            if (showWatermark) {
+              ctx.font = '16px Arial';
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+              ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+            }
 
             canvas.toBlob((blob) => {
               if (blob) {
@@ -97,9 +154,12 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
 
           ctx.drawImage(img, 0, 0);
 
-          ctx.font = '16px Arial';
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-          ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+          // Add watermark if needed
+          if (showWatermark) {
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillText('Quitar Fondo Pro', 10, canvas.height - 10);
+          }
 
           canvas.toBlob((blob) => {
             if (blob) {
@@ -190,6 +250,21 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
               )}
             </div>
           )}
+          
+          {/* Watermark with X button */}
+          {editedImage && showWatermark && (
+            <div className="absolute bottom-2 right-2 bg-black/40 text-white px-3 py-1 rounded flex items-center">
+              <span className="text-sm mr-2">Quitar Fondo Pro</span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-6 w-6 rounded-full hover:bg-white/20 p-1"
+                onClick={handleWatermarkRemoveClick}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -200,6 +275,49 @@ const ImageEditor = ({ initialImage, onReset }: ImageEditorProps) => {
           onSelectCustomBackground={handleCustomBackground}
         />
       )}
+
+      {/* Watermark removal dialog */}
+      <Dialog open={isWatermarkDialogOpen} onOpenChange={setIsWatermarkDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Eliminar marca de agua</DialogTitle>
+            <DialogDescription>
+              Mira un anuncio para eliminar la marca de agua, o hazte usuario Premium.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 gap-4 py-4">
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleWatchAd}
+            >
+              Ver anuncio para quitar marca de agua
+            </Button>
+            <Button 
+              variant="default" 
+              className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
+              onClick={handleBePremium}
+            >
+              Hazte usuario Premium
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Ad watched confirmation */}
+      <AlertDialog open={isAdWatchedDialogOpen} onOpenChange={setIsAdWatchedDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¡Anuncio completado!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Gracias por ver el anuncio. La marca de agua será eliminada.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleAdWatched}>Continuar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
