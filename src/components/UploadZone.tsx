@@ -44,7 +44,7 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
         onClick={() => document.getElementById('fileInput')?.click()}
       >
         <Upload className="w-8 h-8 mb-2" />
-        <span className="text-white font-semibold text-center tracking-tight">Seleccionar una imagen para editar</span>
+        <span className="-mt-2 text-white font-semibold text-center tracking-tight">Seleccionar una imagen para editar</span>
       </Button>
       <input
         id="fileInput"
