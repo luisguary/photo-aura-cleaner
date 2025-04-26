@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { ArrowUpCircle, Crop, MinusCircle, Edit, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -34,11 +34,18 @@ const ImageActions: React.FC<ImageActionsProps> = ({
   const [isProcessingAd, setIsProcessingAd] = useState(false);
 
   // Function to reset all states related to upscaling
-  const resetUpscaleStates = () => {
+  const resetUpscaleStates = useCallback(() => {
     setIsProcessingAd(false);
     setIsUpscaleDialogOpen(false);
     setIsUpscalePremiumDialogOpen(false);
-  };
+  }, []);
+
+  // Effect to make sure the component state is reset when unmounted
+  useEffect(() => {
+    return () => {
+      resetUpscaleStates();
+    };
+  }, [resetUpscaleStates]);
 
   const handleUpscaleClick = () => {
     setIsUpscaleDialogOpen(true);
