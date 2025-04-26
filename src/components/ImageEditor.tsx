@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, RotateCcw } from 'lucide-react';
+import { Eraser, RotateCcw, X } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
-import { toast } from './ui/use-toast';
+import { upscaleImage } from '../utils/upscaleUtils';
+import { toast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ImageEditorProps } from '@/types/image-editor';
 
@@ -11,8 +12,6 @@ import ImageActions from './ImageActions';
 import CropDialog from './CropDialog';
 import ResizeDialog from './ResizeDialog';
 import EditDialog from './EditDialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 import { ImagePreview } from './image-editor/ImagePreview';
 import { DownloadButtons } from './image-editor/DownloadButtons';
 
@@ -109,6 +108,28 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     }
   };
 
+  const handleDownload = async (isHighQuality: boolean) => {
+    try {
+      const response = await fetch(editedImage || initialImage);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `enhanced_${fileName}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      toast({
+        variant: "destructive",
+        title: t('error'),
+        description: t('failedToProcess'),
+      });
+    }
+  };
+
   const handleWatermarkRemoveClick = () => {
     if (isPremiumUser) {
       setShowWatermark(false);
@@ -188,6 +209,21 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const handleCustomBackground = (imageUrl: string) => {
     setCustomBackground(imageUrl);
     setSelectedBackground('custom');
+  };
+
+  const handleCropComplete = async (croppedImage: string) => {
+    setEditedImage(croppedImage);
+    setIsCropDialogOpen(false);
+  };
+
+  const handleResizeComplete = async (resizedImage: string) => {
+    setEditedImage(resizedImage);
+    setIsResizeDialogOpen(false);
+  };
+
+  const handleEditComplete = async (editedImg: string) => {
+    setEditedImage(editedImg);
+    setIsEditDialogOpen(false);
   };
 
   return (

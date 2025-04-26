@@ -1,18 +1,11 @@
 
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { Button } from "./ui/button";
-import { ArrowUpCircle, Crop, MinusCircle, Edit, X } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogFooter
-} from "./ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { ArrowUpCircle, Crop, MinusCircle, Edit } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useImageUpscale } from "@/hooks/useImageUpscale";
+import { UpscaleDialog } from "./image-actions/UpscaleDialog";
+import { UpscalePremiumDialog } from "./image-actions/UpscalePremiumDialog";
 
 interface ImageActionsProps {
   onUpscale: (scale: number) => void;
@@ -30,76 +23,19 @@ const ImageActions: React.FC<ImageActionsProps> = ({
   isPremium 
 }) => {
   const { t } = useTranslation();
-  const [isUpscaleDialogOpen, setIsUpscaleDialogOpen] = useState(false);
-  const [isUpscalePremiumDialogOpen, setIsUpscalePremiumDialogOpen] = useState(false);
-  const [selectedScale, setSelectedScale] = useState<number>(2);
-  const [isProcessingAd, setIsProcessingAd] = useState(false);
-
-  // Function to reset all states related to upscaling
-  const resetUpscaleStates = useCallback(() => {
-    setIsProcessingAd(false);
-    setSelectedScale(2); // Reset to default value
-  }, []);
-
-  const handleUpscaleClick = () => {
-    setIsUpscaleDialogOpen(true);
-  };
-
-  const handleScaleSelect = (scale: number) => {
-    setSelectedScale(scale);
-    setIsUpscaleDialogOpen(false);
-    
-    if (isPremium) {
-      onUpscale(scale);
-      toast({
-        title: t('upscaleImage'),
-        description: `${t('upscaleAction')} ${scale}x`,
-      });
-    } else {
-      // Delay showing premium dialog to ensure first dialog is fully closed
-      setTimeout(() => {
-        setIsUpscalePremiumDialogOpen(true);
-      }, 100);
-    }
-  };
-
-  const handleCloseUpscaleDialog = () => {
-    setIsUpscaleDialogOpen(false);
-  };
-
-  const handleClosePremiumDialog = () => {
-    setIsUpscalePremiumDialogOpen(false);
-    resetUpscaleStates();
-  };
-
-  const handleWatchAd = () => {
-    setIsUpscalePremiumDialogOpen(false);
-    setIsProcessingAd(true);
-    
-    toast({
-      title: t('loadingAd'),
-      description: t('pleaseWait')
-    });
-
-    // Simulate ad watching
-    setTimeout(() => {
-      setIsProcessingAd(false);
-      onUpscale(selectedScale);
-      toast({
-        title: t('adCompletedThankYou'),
-        description: `${t('upscaleAction')} ${selectedScale}x`,
-      });
-    }, 2000);
-  };
-
-  const handleBePremium = () => {
-    setIsUpscalePremiumDialogOpen(false);
-    onUpscale(selectedScale);
-    toast({
-      title: t('becomePremiumUser'),
-      description: `${t('upscaleAction')} ${selectedScale}x`,
-    });
-  };
+  
+  const {
+    isUpscaleDialogOpen,
+    isUpscalePremiumDialogOpen,
+    isProcessingAd,
+    handleUpscaleClick,
+    handleScaleSelect,
+    handleWatchAd,
+    handleBePremium,
+    setIsUpscaleDialogOpen,
+    setIsUpscalePremiumDialogOpen,
+    resetUpscaleStates
+  } = useImageUpscale({ onUpscale, isPremium });
 
   return (
     <div className="flex flex-wrap gap-2 mt-4">
@@ -140,93 +76,21 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         {t('editImage')}
       </Button>
 
-      {/* First dialog - Upscale selection */}
-      <Dialog 
-        open={isUpscaleDialogOpen} 
-        onOpenChange={(open) => {
-          if (!open) {
-            handleCloseUpscaleDialog();
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('upscaleImage')}</DialogTitle>
-            <DialogDescription>
-              {t('chooseUpscaleAmount')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-4 py-4">
-            <Button 
-              variant="default" 
-              className="w-full" 
-              onClick={() => handleScaleSelect(2)}
-            >
-              {t('upscale2x')}
-            </Button>
-            <Button 
-              variant="default" 
-              className="w-full" 
-              onClick={() => handleScaleSelect(4)}
-            >
-              {t('upscale4x')}
-            </Button>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={handleCloseUpscaleDialog}
-              className="w-full"
-            >
-              {t('cancel') || 'Cancel'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <UpscaleDialog 
+        isOpen={isUpscaleDialogOpen}
+        onClose={() => setIsUpscaleDialogOpen(false)}
+        onScaleSelect={handleScaleSelect}
+      />
 
-      {/* Second dialog - Premium/Ad options */}
-      <AlertDialog 
-        open={isUpscalePremiumDialogOpen} 
-        onOpenChange={(open) => {
-          if (!open) {
-            handleClosePremiumDialog();
-          }
+      <UpscalePremiumDialog
+        isOpen={isUpscalePremiumDialogOpen}
+        onClose={() => {
+          setIsUpscalePremiumDialogOpen(false);
+          resetUpscaleStates();
         }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('upscaleImage')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('watchAdToUse')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex flex-col gap-2">
-            <Button 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleWatchAd}
-            >
-              {t('watchAd')}
-            </Button>
-            <Button 
-              variant="default" 
-              className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
-              onClick={handleBePremium}
-            >
-              {t('becomePremium')}
-            </Button>
-          </AlertDialogFooter>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={handleClosePremiumDialog}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </AlertDialogContent>
-      </AlertDialog>
+        onWatchAd={handleWatchAd}
+        onBePremium={handleBePremium}
+      />
     </div>
   );
 };
