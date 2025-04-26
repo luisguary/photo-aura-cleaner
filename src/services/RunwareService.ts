@@ -144,8 +144,8 @@ export class RunwareService {
         taskType: "imageInference",
         taskUUID,
         model: params.model || "runware:100@1",
-        width: 1024,
-        height: 1024,
+        width: params.width || 1024,
+        height: params.height || 1024,
         numberResults: params.numberResults || 1,
         outputFormat: params.outputFormat || "WEBP",
         steps: 4,
@@ -153,7 +153,7 @@ export class RunwareService {
         scheduler: params.scheduler || "FlowMatchEulerDiscreteScheduler",
         strength: params.strength || 0.8,
         lora: params.lora || [],
-        ...params,
+        positivePrompt: params.positivePrompt,
       }];
 
       if (!params.seed) {

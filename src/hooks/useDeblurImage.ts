@@ -14,7 +14,7 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
   const { t } = useTranslation();
 
-  const runwareService = new RunwareService('r8_TFsLDQSgwO9AxepAvy3iHxFZYmWldNI14jrL7');
+  const runwareService = new RunwareService('LQjmP25xF3YWEuek4wjVVezqjwqZK0DB');
 
   const processImage = async (imageUrl: string) => {
     try {
