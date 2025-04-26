@@ -9,13 +9,15 @@ interface WatermarkDialogProps {
   onOpenChange: (open: boolean) => void;
   onWatchAd: () => void;
   onBePremium: () => void;
+  isLoading?: boolean;
 }
 
 export const WatermarkDialog = ({ 
   isOpen, 
   onOpenChange, 
   onWatchAd, 
-  onBePremium 
+  onBePremium,
+  isLoading = false
 }: WatermarkDialogProps) => {
   const { t } = useTranslation();
 
@@ -33,13 +35,15 @@ export const WatermarkDialog = ({
             variant="outline" 
             className="w-full" 
             onClick={onWatchAd}
+            disabled={isLoading}
           >
-            {t('watchAd')}
+            {isLoading ? t('loading') : t('watchAd')}
           </Button>
           <Button 
             variant="default" 
             className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
             onClick={onBePremium}
+            disabled={isLoading}
           >
             {t('becomePremiumUser')}
           </Button>
@@ -49,6 +53,7 @@ export const WatermarkDialog = ({
           size="icon" 
           className="absolute right-4 top-4 rounded-full" 
           onClick={() => onOpenChange(false)}
+          disabled={isLoading}
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>

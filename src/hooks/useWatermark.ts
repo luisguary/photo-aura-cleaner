@@ -2,22 +2,32 @@
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useRewardedAd } from './useRewardedAd';
 
 export const useWatermark = () => {
   const { t } = useTranslation();
   const [showWatermark, setShowWatermark] = useState(true);
   const [isWatermarkDialogOpen, setIsWatermarkDialogOpen] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const { showRewardedAd, isLoading } = useRewardedAd();
 
   const handleWatermarkRemoveClick = () => {
     if (isPremiumUser) {
       setShowWatermark(false);
       toast({
-        title: "Premium User",
-        description: "Watermark automatically removed",
+        title: t('premiumUser'),
+        description: t('watermarkAutomaticallyRemoved'),
       });
     } else {
       setIsWatermarkDialogOpen(true);
+    }
+  };
+
+  const handleWatchAd = async () => {
+    setIsWatermarkDialogOpen(false);
+    const completed = await showRewardedAd();
+    if (completed) {
+      setShowWatermark(false);
     }
   };
 
@@ -26,8 +36,8 @@ export const useWatermark = () => {
     setIsPremiumUser(true);
     setShowWatermark(false);
     toast({
-      title: "Welcome to Premium!",
-      description: "You are now a Premium user and won't see watermarks",
+      title: t('welcomeToPremium'),
+      description: t('youAreNowPremiumUser'),
     });
   };
 
@@ -35,8 +45,10 @@ export const useWatermark = () => {
     showWatermark,
     isWatermarkDialogOpen,
     isPremiumUser,
+    isLoading,
     setIsWatermarkDialogOpen,
     handleWatermarkRemoveClick,
+    handleWatchAd,
     handleBePremium,
   };
 };
