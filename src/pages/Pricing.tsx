@@ -49,18 +49,18 @@ const PricingPage = () => {
     <div className="min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8 relative">
       <motion.button
         onClick={() => navigate('/')}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ rotate: 90 }}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
         transition={{ 
           type: "spring", 
           stiffness: 300, 
-          damping: 20,
-          duration: 0.3
+          damping: 25,
+          duration: 0.4
         }}
-        className="absolute top-8 right-8 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        className="absolute top-8 left-8 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-2.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-sm"
       >
-        <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+        <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
       </motion.button>
 
       <div className="max-w-6xl mx-auto">
