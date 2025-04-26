@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
@@ -12,6 +11,7 @@ import ResizeDialog from './ResizeDialog';
 import EditDialog from './EditDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ImageEditorProps {
   initialImage: string;
@@ -20,6 +20,7 @@ interface ImageEditorProps {
 }
 
 const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
+  const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [upscaledImage, setUpscaledImage] = useState<string | null>(null);
@@ -33,7 +34,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const [isQualityDialogOpen, setIsQualityDialogOpen] = useState(false);
   const [isProcessingAd, setIsProcessingAd] = useState(false);
   
-  // New state for the image operation dialogs
   const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
   const [isResizeDialogOpen, setIsResizeDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -41,10 +41,10 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const handleRemoveBackground = async () => {
     try {
       setIsProcessing(true);
-      setProgress('Processing image...');
+      setProgress(t('processingImage'));
       toast({
-        title: "Processing image...",
-        description: "This may take a few seconds.",
+        title: t('processingImage'),
+        description: t('processingImageWait'),
       });
 
       const img = new Image();
@@ -56,15 +56,15 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       setEditedImage(resultUrl);
 
       toast({
-        title: "Done!",
-        description: "Background has been successfully removed",
+        title: t('success'),
+        description: t('imageEnhanced'),
       });
     } catch (error) {
       console.error('Error processing image:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "There was a problem processing the image. Please try again.",
+        title: t('error'),
+        description: t('failedToProcess'),
       });
     } finally {
       setIsProcessing(false);
@@ -328,7 +328,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           ) : (
             <Eraser className="w-4 h-4 mr-2" />
           )}
-          Remove Background
+          {t('removeBackground')}
         </Button>
         <Button
           variant="outline"
@@ -336,7 +336,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           disabled={isProcessing}
         >
           <RotateCcw className="w-4 h-4 mr-2" />
-          Reset
+          {t('reset')}
         </Button>
         <Button
           variant="default"
@@ -345,7 +345,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           disabled={isProcessing || isProcessingAd}
         >
           <Download className="w-4 h-4 mr-2" />
-          {isPremiumUser ? 'Download in High Quality' : 'Download'}
+          {isPremiumUser ? t('downloadHighQuality') : t('download')}
         </Button>
       </div>
 
@@ -415,7 +415,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         />
       )}
 
-      {/* Crop Dialog */}
       <CropDialog
         open={isCropDialogOpen}
         onOpenChange={setIsCropDialogOpen}
@@ -423,7 +422,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         onCropComplete={handleCropComplete}
       />
 
-      {/* Resize Dialog */}
       <ResizeDialog
         open={isResizeDialogOpen}
         onOpenChange={setIsResizeDialogOpen}
@@ -431,7 +429,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         onResizeComplete={handleResizeComplete}
       />
 
-      {/* Edit Dialog */}
       <EditDialog
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
@@ -442,9 +439,9 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       <Dialog open={isWatermarkDialogOpen} onOpenChange={setIsWatermarkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Remove Watermark</DialogTitle>
+            <DialogTitle>{t('removeWatermark')}</DialogTitle>
             <DialogDescription>
-              Watch an ad to remove the watermark, or become a Premium user.
+              {t('watchAdToUse')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 gap-4 py-4">
@@ -453,14 +450,14 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
               className="w-full" 
               onClick={handleWatchAd}
             >
-              Watch ad to remove watermark
+              {t('watchAdRemoveWatermark')}
             </Button>
             <Button 
               variant="default" 
               className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
               onClick={handleBePremium}
             >
-              Become Premium user
+              {t('becomePremiumUser')}
             </Button>
           </div>
           <Button 
@@ -478,10 +475,9 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       <Dialog open={isQualityDialogOpen} onOpenChange={setIsQualityDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>High Quality Download</DialogTitle>
+            <DialogTitle>{t('highQualityDownload')}</DialogTitle>
             <DialogDescription>
-              Want to download the image in maximum quality without a watermark? 
-              Watch an ad or become Premium.
+              {t('watchAdToUse')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 gap-4 py-4">
@@ -490,14 +486,14 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
               className="w-full" 
               onClick={handleWatchAdForQuality}
             >
-              Watch ad for high quality download
+              {t('watchAdHighQuality')}
             </Button>
             <Button 
               variant="default" 
               className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
               onClick={handleBePremiumForQuality}
             >
-              Become Premium user
+              {t('becomePremiumUser')}
             </Button>
           </div>
           <Button 
@@ -515,13 +511,13 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       <AlertDialog open={isAdWatchedDialogOpen} onOpenChange={setIsAdWatchedDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Ad Completed!</AlertDialogTitle>
+            <AlertDialogTitle>{t('adCompleted')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Thank you for watching the ad. The watermark will be removed.
+              {t('adCompletedThankYou')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleAdWatched}>Continue</AlertDialogAction>
+            <AlertDialogAction onClick={handleAdWatched}>{t('continue')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

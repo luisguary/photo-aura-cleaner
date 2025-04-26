@@ -12,6 +12,7 @@ import {
   DialogFooter
 } from "./ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ImageActionsProps {
   onUpscale: (scale: number) => void;
@@ -28,6 +29,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
   onEdit,
   isPremium 
 }) => {
+  const { t } = useTranslation();
   const [isUpscaleDialogOpen, setIsUpscaleDialogOpen] = useState(false);
   const [isUpscalePremiumDialogOpen, setIsUpscalePremiumDialogOpen] = useState(false);
   const [selectedScale, setSelectedScale] = useState<number>(2);
@@ -57,8 +59,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       setIsUpscaleDialogOpen(false);
       onUpscale(scale);
       toast({
-        title: "Upscaling Image",
-        description: `Upscaling image to ${scale}x its original size...`,
+        title: t('upscaleImage'),
+        description: `${t('upscale')} ${scale}x`,
       });
     } else {
       setIsUpscaleDialogOpen(false);
@@ -71,8 +73,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
     setIsUpscalePremiumDialogOpen(false);
     
     toast({
-      title: "Loading ad...",
-      description: "Please wait while the ad loads",
+      title: t('loadingAd'),
+      description: t('pleaseWait')
     });
 
     // Simulate ad watching
@@ -80,8 +82,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       setIsProcessingAd(false);
       onUpscale(selectedScale);
       toast({
-        title: "Thanks for watching the ad!",
-        description: `Upscaling image to ${selectedScale}x its original size...`,
+        title: t('adCompletedThankYou'),
+        description: `${t('upscale')} ${selectedScale}x`,
       });
     }, 2000);
   };
@@ -90,8 +92,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
     setIsUpscalePremiumDialogOpen(false);
     onUpscale(selectedScale);
     toast({
-      title: "Welcome to Premium!",
-      description: `Upscaling image to ${selectedScale}x its original size...`,
+      title: t('becomePremiumUser'),
+      description: `${t('upscale')} ${selectedScale}x`,
     });
   };
 
@@ -104,7 +106,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         className="flex items-center"
       >
         <ArrowUpCircle className="w-4 h-4 mr-2" />
-        Upscale with AI
+        {t('upscaleWithAI')}
       </Button>
       <Button 
         variant="outline"
@@ -113,7 +115,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         className="flex items-center"
       >
         <Crop className="w-4 h-4 mr-2" />
-        Crop Image
+        {t('cropImage')}
       </Button>
       <Button 
         variant="outline"
@@ -122,7 +124,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         className="flex items-center"
       >
         <MinusCircle className="w-4 h-4 mr-2" />
-        Resize Image
+        {t('resizeImage')}
       </Button>
       <Button 
         variant="outline"
@@ -131,7 +133,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         className="flex items-center"
       >
         <Edit className="w-4 h-4 mr-2" />
-        Edit Image
+        {t('editImage')}
       </Button>
 
       {/* First dialog - Upscale selection */}
@@ -147,9 +149,9 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Upscale Image with AI</DialogTitle>
+            <DialogTitle>{t('upscaleImage')}</DialogTitle>
             <DialogDescription>
-              Choose how much you want to upscale your image:
+              {t('chooseUpscaleAmount')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 py-4">
@@ -158,14 +160,14 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               className="w-full" 
               onClick={() => handleScaleSelect(2)}
             >
-              Upscale 2x
+              {t('upscale2x')}
             </Button>
             <Button 
               variant="default" 
               className="w-full" 
               onClick={() => handleScaleSelect(4)}
             >
-              Upscale 4x
+              {t('upscale4x')}
             </Button>
           </div>
         </DialogContent>
@@ -184,9 +186,9 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Upscale Image with Artificial Intelligence</AlertDialogTitle>
+            <AlertDialogTitle>{t('upscaleImage')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Watch an ad to upscale your image, or become a Premium user.
+              {t('watchAdToUse')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -195,14 +197,14 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               className="w-full" 
               onClick={handleWatchAd}
             >
-              Watch Ad
+              {t('watchAd')}
             </Button>
             <Button 
               variant="default" 
               className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
               onClick={handleBePremium}
             >
-              Become Premium
+              {t('becomePremium')}
             </Button>
           </AlertDialogFooter>
           <Button 

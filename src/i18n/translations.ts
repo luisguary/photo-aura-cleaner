@@ -1,4 +1,3 @@
-
 export type TranslationKey =
   | 'appTitle'
   | 'settings'
@@ -24,7 +23,27 @@ export type TranslationKey =
   | 'loadingAd'
   | 'pleaseWait'
   | 'linkCopied'
-  | 'linkCopiedDescription';
+  | 'linkCopiedDescription'
+  | 'removeBackground'
+  | 'reset'
+  | 'download'
+  | 'downloadHighQuality'
+  | 'upscaleWithAI'
+  | 'cropImage'
+  | 'resizeImage'
+  | 'editImage'
+  | 'upscaleImage'
+  | 'chooseUpscaleAmount'
+  | 'upscale2x'
+  | 'upscale4x'
+  | 'removeWatermark'
+  | 'watchAdRemoveWatermark'
+  | 'highQualityDownload'
+  | 'watchAdHighQuality'
+  | 'adCompleted'
+  | 'adCompletedThankYou'
+  | 'continue'
+  | 'processingImageWait';
 
 export interface Translations {
   [key: string]: {
@@ -58,7 +77,27 @@ export const translations: Translations = {
     loadingAd: 'Cargando anuncio...',
     pleaseWait: 'Por favor, espera mientras se carga el anuncio',
     linkCopied: 'Enlace copiado',
-    linkCopiedDescription: 'El enlace ha sido copiado al portapapeles'
+    linkCopiedDescription: 'El enlace ha sido copiado al portapapeles',
+    removeBackground: 'Eliminar Fondo',
+    reset: 'Reiniciar',
+    download: 'Descargar',
+    downloadHighQuality: 'Descargar en Alta Calidad',
+    upscaleWithAI: 'Aumentar con IA',
+    cropImage: 'Recortar Imagen',
+    resizeImage: 'Redimensionar Imagen',
+    editImage: 'Editar Imagen',
+    upscaleImage: 'Aumentar Imagen con IA',
+    chooseUpscaleAmount: 'Elige cuánto aumentar tu imagen:',
+    upscale2x: 'Aumentar 2x',
+    upscale4x: 'Aumentar 4x',
+    removeWatermark: 'Eliminar Marca de Agua',
+    watchAdRemoveWatermark: 'Ver anuncio para eliminar marca de agua',
+    highQualityDownload: 'Descarga en Alta Calidad',
+    watchAdHighQuality: 'Ver anuncio para descarga en alta calidad',
+    adCompleted: '¡Anuncio Completado!',
+    adCompletedThankYou: 'Gracias por ver el anuncio. La marca de agua será eliminada.',
+    continue: 'Continuar',
+    processingImageWait: 'Procesando imagen, esto puede tardar unos segundos.'
   },
   en: {
     appTitle: 'Background Remover Pro',
@@ -85,7 +124,27 @@ export const translations: Translations = {
     loadingAd: 'Loading ad...',
     pleaseWait: 'Please wait while the ad loads',
     linkCopied: 'Link copied',
-    linkCopiedDescription: 'The link has been copied to the clipboard'
+    linkCopiedDescription: 'The link has been copied to the clipboard',
+    removeBackground: 'Remove Background',
+    reset: 'Reset',
+    download: 'Download',
+    downloadHighQuality: 'Download in High Quality',
+    upscaleWithAI: 'Upscale with AI',
+    cropImage: 'Crop Image',
+    resizeImage: 'Resize Image',
+    editImage: 'Edit Image',
+    upscaleImage: 'Upscale Image with AI',
+    chooseUpscaleAmount: 'Choose how much you want to upscale your image:',
+    upscale2x: 'Upscale 2x',
+    upscale4x: 'Upscale 4x',
+    removeWatermark: 'Remove Watermark',
+    watchAdRemoveWatermark: 'Watch ad to remove watermark',
+    highQualityDownload: 'High Quality Download',
+    watchAdHighQuality: 'Watch ad for high quality download',
+    adCompleted: 'Ad Completed!',
+    adCompletedThankYou: 'Thank you for watching the ad. The watermark will be removed.',
+    continue: 'Continue',
+    processingImageWait: 'Processing image, this may take a few seconds.'
   },
   pt: {
     appTitle: 'Remover Fundo Pro',
@@ -112,7 +171,27 @@ export const translations: Translations = {
     loadingAd: 'Carregando anúncio...',
     pleaseWait: 'Por favor, aguarde enquanto o anúncio carrega',
     linkCopied: 'Link copiado',
-    linkCopiedDescription: 'O link foi copiado para a área de transferência'
+    linkCopiedDescription: 'O link foi copiado para a área de transferência',
+    removeBackground: 'Remover Fundo',
+    reset: 'Reiniciar',
+    download: 'Baixar',
+    downloadHighQuality: 'Baixar em Alta Qualidade',
+    upscaleWithAI: 'Ampliar com IA',
+    cropImage: 'Recortar Imagem',
+    resizeImage: 'Redimensionar Imagem',
+    editImage: 'Editar Imagem',
+    upscaleImage: 'Ampliar Imagem com IA',
+    chooseUpscaleAmount: 'Escolha quanto você deseja ampliar sua imagem:',
+    upscale2x: 'Ampliar 2x',
+    upscale4x: 'Ampliar 4x',
+    removeWatermark: 'Remover Marca d\'água',
+    watchAdRemoveWatermark: 'Assistir anúncio para remover marca d\'água',
+    highQualityDownload: 'Download em Alta Qualidade',
+    watchAdHighQuality: 'Assistir anúncio para download em alta qualidade',
+    adCompleted: 'Anúncio Concluído!',
+    adCompletedThankYou: 'Obrigado por assistir ao anúncio. A marca d\'água será removida.',
+    continue: 'Continuar',
+    processingImageWait: 'Processando imagem, isso pode levar alguns segundos.'
   },
   fr: {
     appTitle: 'Suppression d\'Arrière-plan Pro',
@@ -139,7 +218,27 @@ export const translations: Translations = {
     loadingAd: 'Chargement de la publicité...',
     pleaseWait: 'Veuillez patienter pendant le chargement de la publicité',
     linkCopied: 'Lien copié',
-    linkCopiedDescription: 'Le lien a été copié dans le presse-papiers'
+    linkCopiedDescription: 'Le lien a été copié dans le presse-papiers',
+    removeBackground: 'Supprimer l\'arrière-plan',
+    reset: 'Réinitialiser',
+    download: 'Télécharger',
+    downloadHighQuality: 'Télécharger en Haute Qualité',
+    upscaleWithAI: 'Agrandir avec IA',
+    cropImage: 'Recadrer l\'image',
+    resizeImage: 'Redimensionner l\'image',
+    editImage: 'Modifier l\'image',
+    upscaleImage: 'Agrandir l\'image avec IA',
+    chooseUpscaleAmount: 'Choisissez l\'agrandissement de votre image:',
+    upscale2x: 'Agrandir 2x',
+    upscale4x: 'Agrandir 4x',
+    removeWatermark: 'Supprimer le filigrane',
+    watchAdRemoveWatermark: 'Regarder une publicité pour supprimer le filigrane',
+    highQualityDownload: 'Téléchargement Haute Qualité',
+    watchAdHighQuality: 'Regarder une publicité pour téléchargement haute qualité',
+    adCompleted: 'Publicité Terminée!',
+    adCompletedThankYou: 'Merci d\'avoir regardé la publicité. Le filigrane sera supprimé.',
+    continue: 'Continuer',
+    processingImageWait: 'Traitement de l\'image, cela peut prendre quelques secondes.'
   },
   de: {
     appTitle: 'Hintergrund-Entferner Pro',
@@ -166,7 +265,27 @@ export const translations: Translations = {
     loadingAd: 'Werbung wird geladen...',
     pleaseWait: 'Bitte warten Sie, während die Werbung geladen wird',
     linkCopied: 'Link kopiert',
-    linkCopiedDescription: 'Der Link wurde in die Zwischenablage kopiert'
+    linkCopiedDescription: 'Der Link wurde in die Zwischenablage kopiert',
+    removeBackground: 'Hintergrund entfernen',
+    reset: 'Zurücksetzen',
+    download: 'Herunterladen',
+    downloadHighQuality: 'In hoher Qualität herunterladen',
+    upscaleWithAI: 'Mit KI vergrößern',
+    cropImage: 'Bild zuschneiden',
+    resizeImage: 'Bildgröße ändern',
+    editImage: 'Bild bearbeiten',
+    upscaleImage: 'Bild mit KI vergrößern',
+    chooseUpscaleAmount: 'Wählen Sie, wie stark Sie Ihr Bild vergrößern möchten:',
+    upscale2x: '2x vergrößern',
+    upscale4x: '4x vergrößern',
+    removeWatermark: 'Wasserzeichen entfernen',
+    watchAdRemoveWatermark: 'Anzeige ansehen, um Wasserzeichen zu entfernen',
+    highQualityDownload: 'Download in hoher Qualität',
+    watchAdHighQuality: 'Anzeige für Download in hoher Qualität ansehen',
+    adCompleted: 'Anzeige abgeschlossen!',
+    adCompletedThankYou: 'Vielen Dank für das Ansehen der Anzeige. Das Wasserzeichen wird entfernt.',
+    continue: 'Fortfahren',
+    processingImageWait: 'Bild wird verarbeitet, dies kann einige Sekunden dauern.'
   },
   it: {
     appTitle: 'Rimuovi Sfondo Pro',
@@ -193,7 +312,27 @@ export const translations: Translations = {
     loadingAd: 'Caricamento annuncio...',
     pleaseWait: 'Attendi mentre l\'annuncio viene caricato',
     linkCopied: 'Link copiato',
-    linkCopiedDescription: 'Il link è stato copiato negli appunti'
+    linkCopiedDescription: 'Il link è stato copiato negli appunti',
+    removeBackground: 'Rimuovi Sfondo',
+    reset: 'Ripristina',
+    download: 'Scarica',
+    downloadHighQuality: 'Scarica in Alta Qualità',
+    upscaleWithAI: 'Ingrandisci con IA',
+    cropImage: 'Ritaglia Immagine',
+    resizeImage: 'Ridimensiona Immagine',
+    editImage: 'Modifica Immagine',
+    upscaleImage: 'Ingrandisci Immagine con IA',
+    chooseUpscaleAmount: 'Scegli di quanto ingrandire la tua immagine:',
+    upscale2x: 'Ingrandisci 2x',
+    upscale4x: 'Ingrandisci 4x',
+    removeWatermark: 'Rimuovi Filigrana',
+    watchAdRemoveWatermark: 'Guarda un annuncio per rimuovere la filigrana',
+    highQualityDownload: 'Download in Alta Qualità',
+    watchAdHighQuality: 'Guarda un annuncio per il download in alta qualità',
+    adCompleted: 'Annuncio Completato!',
+    adCompletedThankYou: 'Grazie per aver guardato l\'annuncio. La filigrana sarà rimossa.',
+    continue: 'Continua',
+    processingImageWait: 'Elaborazione dell\'immagine, potrebbe richiedere alcuni secondi.'
   },
   hi: {
     appTitle: 'बैकग्राउंड हटानेवाला प्रो',
@@ -215,12 +354,32 @@ export const translations: Translations = {
     becomePremium: 'प्रीमियम बनें',
     fixBlurryPhotoAI: 'एआई के साथ धुंधली फोटो ठीक करें',
     watchAdToUse: 'इस सुविधा का उपयोग करने के लिए एक विज्ञापन देखें, या प्रीमियम बनें।',
-    watchAdToFix: 'फोटो ठीक करने के लिए विज्ञापन देखें',
+    watchAdToFix: 'विज्ञापन देखें, उसकी फोटो को ठीक करने के लिए',
     becomePremiumUser: 'प्रीमियम उपयोगकर्ता बनें',
     loadingAd: 'विज्ञापन लोड हो रहा है...',
     pleaseWait: 'कृपया प्रतीक्षा करें जबकि विज्ञापन लोड हो रहा है',
     linkCopied: 'लिंक कॉपी किया गया',
-    linkCopiedDescription: 'लिंक क्लिपबोर्ड पर कॉपी किया गया है'
+    linkCopiedDescription: 'लिंक क्लिपबोर्ड पर कॉपी किया गया है',
+    removeBackground: 'पृष्ठभूमि हटाएं',
+    reset: 'रीसेट करें',
+    download: 'डाउनलोड करें',
+    downloadHighQuality: 'उच्च गुणवत्ता में डाउनलोड करें',
+    upscaleWithAI: 'AI के साथ अपस्केल करें',
+    cropImage: 'छवि को क्रॉप करें',
+    resizeImage: 'छवि का आकार बदलें',
+    editImage: 'छवि संपादित करें',
+    upscaleImage: 'AI के साथ छवि अपस्केल करें',
+    chooseUpscaleAmount: 'चुनें कि आप अपनी छवि को कितना बड़ा करना चाहते हैं:',
+    upscale2x: '2x अपस्केल करें',
+    upscale4x: '4x अपस्केल करें',
+    removeWatermark: 'वॉटरमार्क हटाएं',
+    watchAdRemoveWatermark: 'वॉटरमार्क हटाने के लिए विज्ञापन देखें',
+    highQualityDownload: 'उच्च गुणवत्ता डाउनलोड',
+    watchAdHighQuality: 'उच्च गुणवत्ता डाउनलोड के लिए विज्ञापन देखें',
+    adCompleted: 'विज्ञापन पूर्ण!',
+    adCompletedThankYou: 'विज्ञापन देखने के लिए धन्यवाद। वॉटरमार्क हटा दिया जाएगा।',
+    continue: 'जारी रखें',
+    processingImageWait: 'छवि संसाधित हो रही है, इसमें कुछ सेकंड लग सकते हैं।'
   },
   ar: {
     appTitle: 'مزيل الخلفية برو',
@@ -242,11 +401,31 @@ export const translations: Translations = {
     becomePremium: 'كن مميزًا',
     fixBlurryPhotoAI: 'إصلاح الصورة الضبابية بالذكاء الاصطناعي',
     watchAdToUse: 'شاهد إعلانًا لاستخدام هذه الميزة، أو كن مستخدمًا مميزًا.',
-    watchAdToFix: 'مشاهدة إعلان لإصلاح الصورة',
+    watchAdToFix: 'شاهد إعلان لإصلاح الصورة',
     becomePremiumUser: 'كن مستخدمًا مميزًا',
     loadingAd: 'جاري تحميل الإعلان...',
     pleaseWait: 'يرجى الانتظار أثناء تحميل الإعلان',
     linkCopied: 'تم نسخ الرابط',
-    linkCopiedDescription: 'تم نسخ الرابط إلى الحافظة'
+    linkCopiedDescription: 'تم نسخ الرابط إلى الحافظة',
+    removeBackground: 'إزالة الخلفية',
+    reset: 'إعادة ضبط',
+    download: 'تحميل',
+    downloadHighQuality: 'تحميل بجودة عالية',
+    upscaleWithAI: 'تحسين بالذكاء الاصطناعي',
+    cropImage: 'قص الصورة',
+    resizeImage: 'تغيير حجم الصورة',
+    editImage: 'تعديل الصورة',
+    upscaleImage: 'تحسين الصورة بالذكاء الاصطناعي',
+    chooseUpscaleAmount: 'اختر مقدار تحسين صورتك:',
+    upscale2x: 'تحسين 2x',
+    upscale4x: 'تحسين 4x',
+    removeWatermark: 'إزالة العلامة المائية',
+    watchAdRemoveWatermark: 'مشاهدة إعلان لإزالة العلامة المائية',
+    highQualityDownload: 'تحميل بجودة عالية',
+    watchAdHighQuality: 'مشاهدة إعلان للتحميل بجودة عالية',
+    adCompleted: 'تم الانتهاء من الإعلان!',
+    adCompletedThankYou: 'شكرا على مشاهدة الإعلان. سيتم إزالة العلامة المائية.',
+    continue: 'متابعة',
+    processingImageWait: 'جاري معالجة الصورة، قد يستغرق ذلك بضع ثوان.'
   }
 };
