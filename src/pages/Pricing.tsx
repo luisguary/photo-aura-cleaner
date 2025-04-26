@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,7 +58,7 @@ const PricingPage = () => {
           damping: 25,
           duration: 0.4
         }}
-        className="absolute top-12 left-8 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-2.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-sm"
+        className="absolute top-20 left-8 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-2.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-sm"
       >
         <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
       </motion.button>
