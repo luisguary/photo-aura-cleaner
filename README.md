@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Quitar Fondo Pro
 
 ## Project info
 
@@ -6,7 +6,7 @@
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
+Quitar Fondo Pro is a powerful web application for removing backgrounds from images.
 
 **Use Lovable**
 

@@ -1,7 +1,7 @@
 import { Translation } from '../types';
 
 export const en: Translation = {
-  appTitle: "Photo Aura Cleaner",
+  appTitle: "Quitar Fondo Pro",
   uploadImage: "Upload Image",
   orDragDrop: "or drag and drop",
   supportedFormats: "Supported formats: JPG, PNG, WebP",
