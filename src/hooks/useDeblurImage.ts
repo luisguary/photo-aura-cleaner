@@ -1,7 +1,7 @@
-
 import { useState } from 'react';
 import { toast } from './use-toast';
 import { useTranslation } from './useTranslation';
+import { RunwareService, GeneratedImage } from '@/services/RunwareService';
 
 interface UseDeblurImageProps {
   isPremium: boolean;
@@ -13,6 +13,8 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
   const { t } = useTranslation();
 
+  const runwareService = new RunwareService('r8_TFsLDQSgwO9AxepAvy3iHxFZYmWldNI14jrL7');
+
   const processImage = async (imageUrl: string) => {
     try {
       setIsProcessing(true);
@@ -21,23 +23,14 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
         description: t('enhancingImage')
       });
 
-      const formData = new FormData();
-      formData.append('image', imageUrl);
-
-      const response = await fetch("https://api.deepai.org/api/torch-srgan", {
-        method: 'POST',
-        headers: {
-          'api-key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K'
-        },
-        body: formData
+      const result = await runwareService.generateImage({
+        positivePrompt: "enhance image quality, increase sharpness, reduce blur, maintain original content",
+        model: "runware:100@1",
+        width: 1024,
+        height: 1024,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to process image');
-      }
-
-      const result = await response.json();
-      onSuccess(result.output_url);
+      onSuccess(result.imageURL);
       
       toast({
         title: t('success'),
