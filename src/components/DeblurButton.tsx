@@ -1,9 +1,10 @@
 
 import { Button } from "./ui/button";
-import { Sharpness } from "lucide-react";
+import { Image } from "lucide-react";
 import { useDeblurImage } from "@/hooks/useDeblurImage";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "./ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 interface DeblurButtonProps {
   isPremium: boolean;
@@ -54,7 +55,7 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
         disabled={isProcessing}
         className={`bg-[#9b87f5] hover:bg-[#8b77e5] text-white ${className}`}
       >
-        <Sharpness className="w-4 h-4 mr-2" />
+        <Image className="w-4 h-4 mr-2" />
         Fix Blurry Photo
       </Button>
 

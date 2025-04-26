@@ -19,12 +19,15 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
         description: "Enhancing image sharpness with AI..."
       });
 
+      const formData = new FormData();
+      formData.append('image', imageUrl);
+
       const response = await fetch("https://api.deepai.org/api/torch-srgan", {
         method: 'POST',
         headers: {
           'api-key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K'
         },
-        body: new FormData().append('image', imageUrl)
+        body: formData
       });
 
       if (!response.ok) {
