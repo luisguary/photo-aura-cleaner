@@ -1,4 +1,3 @@
-
 export type TranslationKey =
   | 'appTitle'
   | 'uploadImage'
@@ -65,8 +64,7 @@ export type TranslationKey =
   | 'watchAdRemoveWatermark'
   | 'processingImageWait'
   | 'success'
-  | 'enhancingImage'
-  | 'watchAdHighQuality';
+  | 'enhancingImage';
 
 export type Translation = {
   [key in TranslationKey]: string;

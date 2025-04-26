@@ -1,14 +1,14 @@
 
-import { useState } from 'react';
 import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { Progress } from './ui/progress';
-import { ArrowUpCircle, Download, X, Share2, Upload } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { ArrowUpCircle, Upload, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from '@/hooks/use-toast';
-import { useUpscaleImage } from '@/hooks/useUpscaleImage';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from './ui/alert-dialog';
+import { useScaleImage } from '@/hooks/useScaleImage';
+import { ErrorDialog } from './scale-with-ai/ErrorDialog';
+import { ResultDialog } from './scale-with-ai/ResultDialog';
+import { ProcessingDialog } from './scale-with-ai/ProcessingDialog';
 
 interface ScaleWithAIButtonProps {
   onImageProcessed: (imageUrl: string) => void;
@@ -17,66 +17,23 @@ interface ScaleWithAIButtonProps {
 
 export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIButtonProps) => {
   const { t } = useTranslation();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isResultDialogOpen, setIsResultDialogOpen] = useState(false);
-  const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
-  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [scaledImage, setScaledImage] = useState<string | null>(null);
-  const { isProcessing, progress, handleUpscale } = useUpscaleImage();
-  const [progressPercent, setProgressPercent] = useState(0);
-
-  const handleFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      startProcessing(imageUrl);
-    }
-  };
-
-  const startProcessing = async (imageUrl: string) => {
-    toast({
-      title: t('processingImage'),
-      description: t('pleaseWait'),
-    });
-
-    // Simulate progress
-    const interval = setInterval(() => {
-      setProgressPercent(prev => {
-        const newProgress = prev + Math.random() * 10;
-        return newProgress >= 90 ? 90 : newProgress;
-      });
-    }, 500);
-
-    try {
-      const result = await handleUpscale(imageUrl, 2);
-      clearInterval(interval);
-      setProgressPercent(100);
-      
-      if (result) {
-        setScaledImage(result);
-        setIsResultDialogOpen(true);
-      } else {
-        setIsErrorDialogOpen(true);
-      }
-    } catch (error) {
-      clearInterval(interval);
-      console.error('Error processing image:', error);
-      setIsErrorDialogOpen(true);
-    }
-  };
-
-  const handleDownload = () => {
-    if (!scaledImage) return;
-    
-    if (isPremium) {
-      downloadImage(scaledImage);
-      setIsResultDialogOpen(false);
-    } else {
-      setIsAdDialogOpen(true);
-    }
-  };
+  const {
+    isDialogOpen,
+    setIsDialogOpen,
+    isResultDialogOpen,
+    setIsResultDialogOpen,
+    isAdDialogOpen,
+    setIsAdDialogOpen,
+    isErrorDialogOpen,
+    setIsErrorDialogOpen,
+    selectedImage,
+    scaledImage,
+    isProcessing,
+    progressPercent,
+    handleFileSelected,
+    handleDownload,
+    handleContinueToApp,
+  } = useScaleImage(onImageProcessed, isPremium);
 
   const handleWatchAd = () => {
     toast({
@@ -84,68 +41,16 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
       description: t('pleaseWait'),
     });
 
-    // Simulate ad watching
     setTimeout(() => {
       setIsAdDialogOpen(false);
       if (scaledImage) {
-        downloadImage(scaledImage);
+        handleDownload();
         toast({
           title: t('adCompletedThankYou'),
           description: t('downloadStarted'),
         });
       }
     }, 2000);
-  };
-
-  const downloadImage = async (imageUrl: string) => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'scaled-image.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading image:', error);
-      toast({
-        variant: "destructive",
-        title: t('error'),
-        description: t('failedToProcess'),
-      });
-    }
-  };
-
-  const handleContinueToApp = () => {
-    if (scaledImage) {
-      onImageProcessed(scaledImage);
-      setIsResultDialogOpen(false);
-    }
-  };
-
-  const handleRetry = () => {
-    setIsErrorDialogOpen(false);
-    setIsDialogOpen(true);
-  };
-
-  const handleShare = () => {
-    if (navigator.share && scaledImage) {
-      navigator.share({
-        title: 'Imagen Escalada',
-        text: 'Mira esta imagen que acabo de escalar con IA',
-        url: scaledImage,
-      })
-      .then(() => console.log('Successful share'))
-      .catch((error) => console.log('Error sharing', error));
-    } else {
-      toast({
-        title: "Compartir no disponible",
-        description: "Esta función no está disponible en tu dispositivo",
-      });
-    }
   };
 
   return (
@@ -160,7 +65,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
           className="w-full bg-[#9b87f5] hover:bg-[#8b77e5] text-white p-4 flex items-center justify-center gap-2"
         >
           <ArrowUpCircle className="w-5 h-5" />
-          Escalar con IA
+          {t('upscaleWithAI')}
         </Button>
       </motion.div>
 
@@ -169,7 +74,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <ArrowUpCircle className="w-5 h-5 text-[#9b87f5]" /> Escalar con IA
+              <ArrowUpCircle className="w-5 h-5 text-[#9b87f5]" /> {t('upscaleWithAI')}
             </DialogTitle>
             <DialogDescription>
               {t('selectImageToEnhance')}
@@ -181,7 +86,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
                 type="file"
                 accept="image/*"
                 id="scale-file-input"
-                onChange={handleFileSelected}
+                onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0])}
                 className="hidden"
                 disabled={isProcessing}
               />
@@ -191,10 +96,10 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
               >
                 <Upload className="w-12 h-12 text-gray-400 mb-2" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Haz clic para seleccionar una imagen
+                  {t('uploadImage')}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  O arrastra y suelta aquí
+                  {t('orDragDrop')}
                 </p>
               </label>
             </div>
@@ -212,83 +117,17 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
       </Dialog>
 
       {/* Processing Dialog */}
-      <Dialog open={isProcessing} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Procesando Imagen</DialogTitle>
-            <DialogDescription>
-              {progress || t('processingImage')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-6">
-            <Progress value={progressPercent} className="w-full" />
-            <p className="text-center text-sm text-gray-500 mt-2">
-              {Math.round(progressPercent)}%
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ProcessingDialog isOpen={isProcessing} progress={progressPercent} />
 
       {/* Result Dialog */}
-      <Dialog open={isResultDialogOpen} onOpenChange={setIsResultDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{t('imageEnhanced')}</DialogTitle>
-            <DialogDescription>
-              {t('imageEnhancedDescription')}
-            </DialogDescription>
-          </DialogHeader>
-          {scaledImage && (
-            <div className="py-4">
-              <img 
-                src={scaledImage} 
-                alt="Scaled" 
-                className="w-full h-auto rounded-md shadow-md" 
-              />
-            </div>
-          )}
-          <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button 
-              variant="outline"
-              onClick={handleShare}
-              className="w-full sm:w-auto"
-            >
-              <Share2 className="w-4 h-4 mr-2" />
-              Compartir
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => setIsDialogOpen(true)}
-              className="w-full sm:w-auto"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              Escalar otra
-            </Button>
-            <Button 
-              onClick={handleDownload}
-              className="w-full sm:w-auto bg-[#9b87f5] hover:bg-[#8b77e5]"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Descargar
-            </Button>
-            <Button
-              onClick={handleContinueToApp}
-              className="w-full sm:w-auto"
-            >
-              Continuar
-            </Button>
-          </DialogFooter>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsResultDialogOpen(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <ResultDialog 
+        isOpen={isResultDialogOpen}
+        onOpenChange={setIsResultDialogOpen}
+        scaledImage={scaledImage}
+        onDownload={handleDownload}
+        onUploadAnother={() => setIsDialogOpen(true)}
+        onContinue={handleContinueToApp}
+      />
 
       {/* Ad Dialog */}
       <Dialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
@@ -318,20 +157,14 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
       </Dialog>
 
       {/* Error Dialog */}
-      <AlertDialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('error')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('scalingError')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRetry}>{t('retry')}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ErrorDialog
+        isOpen={isErrorDialogOpen}
+        onOpenChange={setIsErrorDialogOpen}
+        onRetry={() => {
+          setIsErrorDialogOpen(false);
+          setIsDialogOpen(true);
+        }}
+      />
     </>
   );
 };
