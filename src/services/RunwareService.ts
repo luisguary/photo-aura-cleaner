@@ -140,7 +140,8 @@ export class RunwareService {
     const taskUUID = crypto.randomUUID();
     
     return new Promise((resolve, reject) => {
-      const message = [{
+      // Create message object with all properties explicitly defined
+      const messageObj = {
         taskType: "imageInference",
         taskUUID,
         model: params.model || "runware:100@1",
@@ -154,16 +155,19 @@ export class RunwareService {
         strength: params.strength || 0.8,
         lora: params.lora || [],
         positivePrompt: params.positivePrompt,
-      }];
+      };
 
-      if (!params.seed) {
-        delete message[0].seed;
+      // Conditionally add seed if it exists in params
+      if (params.seed !== undefined) {
+        Object.assign(messageObj, { seed: params.seed });
       }
 
-      if (message[0].model === "runware:100@1") {
-        delete message[0].promptWeighting;
+      // Conditionally add promptWeighting for models other than runware:100@1
+      if (messageObj.model !== "runware:100@1" && params.promptWeighting) {
+        Object.assign(messageObj, { promptWeighting: params.promptWeighting });
       }
 
+      const message = [messageObj];
       console.log("Sending image generation message:", message);
 
       this.messageCallbacks.set(taskUUID, (data) => {
