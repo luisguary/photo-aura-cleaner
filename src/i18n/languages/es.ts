@@ -2,7 +2,7 @@
 import { Translation } from '../types';
 
 export const es: Translation = {
-  aiImageEditor: 'Editor de Imágenes IA',
+  aiImageEditor: 'Quitar Fondo Pro',
   selectImageToEdit: 'Selecciona una imagen para editar',
   fixBlurryPhoto: 'Arreglar Foto Borrosa',
   settings: 'Configuración',
@@ -55,6 +55,5 @@ export const es: Translation = {
   upscale2x: 'Escalar 2x',
   upscale4x: 'Escalar 4x',
   chooseUpscaleAmount: 'Elige la cantidad de escalado',
-  appTitle: 'Editor de Imágenes IA'
+  appTitle: 'Quitar Fondo Pro'
 };
-
