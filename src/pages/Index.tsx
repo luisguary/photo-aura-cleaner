@@ -5,6 +5,7 @@ import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Moon, Sun } from 'lucide-react';
+import { Settings } from '../components/Settings';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -38,7 +39,7 @@ const Index = () => {
   return (
     <div className={`min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8`}>
       <div className="max-w-5xl mx-auto">
-        {/* Logo y encabezado */}
+        {/* Logo and header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-blue dark:text-white">
@@ -84,6 +85,8 @@ const Index = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Settings />
     </div>
   );
 };
