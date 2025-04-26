@@ -33,6 +33,13 @@ const ImageActions: React.FC<ImageActionsProps> = ({
   const [selectedScale, setSelectedScale] = useState<number>(2);
   const [isProcessingAd, setIsProcessingAd] = useState(false);
 
+  // Function to reset all states related to upscaling
+  const resetUpscaleStates = () => {
+    setIsProcessingAd(false);
+    setIsUpscaleDialogOpen(false);
+    setIsUpscalePremiumDialogOpen(false);
+  };
+
   const handleUpscaleClick = () => {
     setIsUpscaleDialogOpen(true);
   };
@@ -121,7 +128,16 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       </Button>
 
       {/* First dialog - Upscale selection */}
-      <Dialog open={isUpscaleDialogOpen} onOpenChange={setIsUpscaleDialogOpen}>
+      <Dialog 
+        open={isUpscaleDialogOpen} 
+        onOpenChange={(open) => {
+          setIsUpscaleDialogOpen(open);
+          // If dialog is closed, reset states
+          if (!open) {
+            resetUpscaleStates();
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Upscale Image with AI</DialogTitle>
@@ -154,9 +170,9 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         open={isUpscalePremiumDialogOpen} 
         onOpenChange={(open) => {
           setIsUpscalePremiumDialogOpen(open);
-          // Ensure isProcessingAd is reset when dialog is closed
-          if (!open && isProcessingAd) {
-            setIsProcessingAd(false);
+          // When dialog is closed, reset all states to restore app functionality
+          if (!open) {
+            resetUpscaleStates();
           }
         }}
       >
@@ -187,7 +203,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
             variant="ghost" 
             size="icon" 
             className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsUpscalePremiumDialogOpen(false)}
+            onClick={() => resetUpscaleStates()}
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>

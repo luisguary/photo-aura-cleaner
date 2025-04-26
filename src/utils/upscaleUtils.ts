@@ -1,5 +1,5 @@
 
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 export const upscaleImage = async (imageBlob: Blob, scale: number): Promise<Blob | null> => {
   try {
