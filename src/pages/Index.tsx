@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { ScaleWithAIButton } from '@/components/ScaleWithAIButton';
 import { AdMobBanner } from '@/components/AdMobBanner';
-import { isPlatform } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -23,7 +23,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   // Check if we're running on a device
-  const isMobileDevice = isPlatform('android') || isPlatform('ios');
+  const isMobileDevice = Capacitor.isNativePlatform();
   // AdMob ID
   const adMobBannerID = 'ca-app-pub-1145055690439051/7440147911';
 

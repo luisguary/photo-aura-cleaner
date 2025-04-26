@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { isPlatform } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 interface AdMobBannerProps {
@@ -21,9 +21,8 @@ export const AdMobBanner: React.FC<AdMobBannerProps> = ({
     const initializeAdMob = async () => {
       try {
         // Only initialize on a real device
-        if (isPlatform('android') || isPlatform('ios')) {
+        if (Capacitor.isNativePlatform()) {
           await AdMob.initialize({
-            requestTrackingAuthorization: true,
             testingDevices: [adId],
             initializeForTesting: isTesting,
           });
@@ -40,7 +39,7 @@ export const AdMobBanner: React.FC<AdMobBannerProps> = ({
 
     return () => {
       // Clean up the banner when component unmounts
-      if (adInitialized && (isPlatform('android') || isPlatform('ios'))) {
+      if (adInitialized && Capacitor.isNativePlatform()) {
         AdMob.removeBanner().catch(e => console.error('Error removing banner:', e));
       }
     };
@@ -48,7 +47,7 @@ export const AdMobBanner: React.FC<AdMobBannerProps> = ({
 
   const showBanner = async () => {
     try {
-      if (!adInitialized || !(isPlatform('android') || isPlatform('ios'))) {
+      if (!adInitialized || !Capacitor.isNativePlatform()) {
         return;
       }
 
@@ -71,7 +70,7 @@ export const AdMobBanner: React.FC<AdMobBannerProps> = ({
   // This component just handles the initialization and lifecycle
   return (
     <div className="admob-banner-placeholder" style={{ display: 'none' }}>
-      {adError && console.error(adError)}
+      {adError && <span className="hidden">{adError}</span>}
     </div>
   );
 };
