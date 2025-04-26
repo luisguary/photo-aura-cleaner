@@ -2,10 +2,13 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Crown } from 'lucide-react';
+import { Check, Crown, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const PricingPage = () => {
+  const navigate = useNavigate();
+
   const plans = [
     {
       title: "1 Día Premium",
@@ -43,7 +46,23 @@ const PricingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8">
+    <div className="min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8 relative">
+      <motion.button
+        onClick={() => navigate('/')}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ rotate: 90 }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 300, 
+          damping: 20,
+          duration: 0.3
+        }}
+        className="absolute top-4 right-4 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+      >
+        <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+      </motion.button>
+
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
           Planes Premium
