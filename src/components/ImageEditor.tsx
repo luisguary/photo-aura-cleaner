@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, RotateCcw, X } from 'lucide-react';
+import { Eraser, RotateCcw } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
-import { upscaleImage } from '../utils/upscaleUtils';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ImageEditorProps } from '@/types/image-editor';
@@ -14,6 +13,9 @@ import ResizeDialog from './ResizeDialog';
 import EditDialog from './EditDialog';
 import { ImagePreview } from './image-editor/ImagePreview';
 import { DownloadButtons } from './image-editor/DownloadButtons';
+import { WatermarkDialog } from './image-editor/WatermarkDialog';
+import { QualityDialog } from './image-editor/QualityDialog';
+import { AdCompletedDialog } from './image-editor/AdCompletedDialog';
 
 const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const { t } = useTranslation();
@@ -29,7 +31,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [isQualityDialogOpen, setIsQualityDialogOpen] = useState(false);
   const [isProcessingAd, setIsProcessingAd] = useState(false);
-  
   const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
   const [isResizeDialogOpen, setIsResizeDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -145,9 +146,9 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const handleWatchAd = () => {
     setIsWatermarkDialogOpen(false);
     setProgress('Loading ad...');
-    setIsProcessing(true);
+    setIsProcessingAd(true);
     setTimeout(() => {
-      setIsProcessing(false);
+      setIsProcessingAd(false);
       setProgress('');
       setIsAdWatchedDialogOpen(true);
     }, 2000);
@@ -308,91 +309,25 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         onEditComplete={handleEditComplete}
       />
 
-      <Dialog open={isWatermarkDialogOpen} onOpenChange={setIsWatermarkDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('removeWatermark')}</DialogTitle>
-            <DialogDescription>
-              {t('watchAdToUse')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-1 gap-4 py-4">
-            <Button 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleWatchAd}
-            >
-              {t('watchAdRemoveWatermark')}
-            </Button>
-            <Button 
-              variant="default" 
-              className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
-              onClick={handleBePremium}
-            >
-              {t('becomePremiumUser')}
-            </Button>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsWatermarkDialogOpen(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <WatermarkDialog
+        isOpen={isWatermarkDialogOpen}
+        onOpenChange={setIsWatermarkDialogOpen}
+        onWatchAd={handleWatchAd}
+        onBePremium={handleBePremium}
+      />
 
-      <Dialog open={isQualityDialogOpen} onOpenChange={setIsQualityDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('highQualityDownload')}</DialogTitle>
-            <DialogDescription>
-              {t('watchAdToUse')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-1 gap-4 py-4">
-            <Button 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleWatchAdForQuality}
-            >
-              {t('watchAdHighQuality')}
-            </Button>
-            <Button 
-              variant="default" 
-              className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
-              onClick={handleBePremiumForQuality}
-            >
-              {t('becomePremiumUser')}
-            </Button>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsQualityDialogOpen(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <QualityDialog
+        isOpen={isQualityDialogOpen}
+        onOpenChange={setIsQualityDialogOpen}
+        onWatchAd={handleWatchAdForQuality}
+        onBePremium={handleBePremiumForQuality}
+      />
 
-      <AlertDialog open={isAdWatchedDialogOpen} onOpenChange={setIsAdWatchedDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('adCompleted')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('adCompletedThankYou')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={handleAdWatched}>{t('continue')}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AdCompletedDialog
+        isOpen={isAdWatchedDialogOpen}
+        onOpenChange={setIsAdWatchedDialogOpen}
+        onContinue={handleAdWatched}
+      />
     </div>
   );
 };
