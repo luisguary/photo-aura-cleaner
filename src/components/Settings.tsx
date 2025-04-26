@@ -1,9 +1,10 @@
 
+import React, { useState } from 'react';
+import { Settings as SettingsIcon, Share, X } from "lucide-react";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
 import { useSettingsStore } from "@/stores/settingsStore";
-import { Settings as SettingsIcon } from "lucide-react";
+import { useToast, toast } from "@/hooks/use-toast";
 
 const APP_VERSION = "1.0.4";
 
