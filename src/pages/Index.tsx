@@ -1,15 +1,17 @@
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'; // Add this import
+import { motion } from 'framer-motion';
 import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Moon, Sun, Crown } from 'lucide-react';
+import { Moon, Sun, Crown, ArrowUpCircle, X } from 'lucide-react';
 import { Settings } from '../components/Settings';
 import { DeblurButton } from '../components/DeblurButton';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
+import { ScaleWithAIButton } from '@/components/ScaleWithAIButton';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -99,14 +101,21 @@ const Index = () => {
             {!selectedImage ? (
               <div className="space-y-4">
                 <UploadZone onImageSelected={handleImageSelected} />
-                <div className="flex justify-center mt-4">
+                <div className="flex flex-col md:flex-row justify-center gap-4 mt-4">
                   <DeblurButton
                     isPremium={false}
                     onImageProcessed={(url) => {
                       setSelectedImage(url);
                       setSelectedFileName("enhanced-image.jpg");
                     }}
-                    className="ml-2"
+                    className="w-full md:w-auto"
+                  />
+                  <ScaleWithAIButton 
+                    onImageProcessed={(url) => {
+                      setSelectedImage(url);
+                      setSelectedFileName("scaled-image.jpg");
+                    }}
+                    isPremium={false}
                   />
                 </div>
               </div>
