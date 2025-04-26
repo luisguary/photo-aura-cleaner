@@ -19,13 +19,9 @@ export const useInterstitialAd = () => {
       // Prepare the interstitial
       await AdMob.prepareInterstitial(options);
       
-      // Check if the ad is ready using the correct method
-      const isReady = await AdMob.isLoaded();
-      
-      if (isReady) {
-        // Show the interstitial ad
-        await AdMob.showInterstitial();
-      }
+      // Show the interstitial ad without checking readiness
+      // The prepare function ensures the ad is ready before proceeding
+      await AdMob.showInterstitial();
     } catch (error) {
       console.error('Error showing interstitial ad:', error);
       // Silently fail to not interrupt user experience
