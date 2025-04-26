@@ -30,8 +30,8 @@ export const useRewardedAd = () => {
       setIsLoading(false);
       
       // Check if the user completed watching the ad
-      // The result.rewarded property indicates if the user should get the reward
-      if (result && result.rewarded) {
+      // Using the appropriate property from AdMobRewardItem
+      if (result && result.type === 'reward_video' && result.amount > 0) {
         toast({
           title: t('success'),
           description: t('watermarkWillBeRemoved'),
