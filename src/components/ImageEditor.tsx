@@ -40,14 +40,14 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     setIsEditDialogOpen,
     setSelectedBackground,
     handleRemoveBackground,
-    handleUpscale,
+    handleUpscaleRequest,
     handleWatermarkRemoveClick,
     handleWatchAd,
     handleAdWatched,
     handleBePremium,
-    handleQualityDownload,
-    handleWatchAdForQuality,
-    handleBePremiumForQuality,
+    handleQualityDownloadRequest,
+    handleWatchAdForQualityRequest,
+    handleBePremiumForQualityRequest,
     handleCustomBackground,
     handleCropComplete,
     handleResizeComplete,
@@ -80,7 +80,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
         </Button>
 
         <DownloadButtons 
-          onDownload={handleQualityDownload}
+          onDownload={handleQualityDownloadRequest}
           isPremiumUser={isPremiumUser}
           isProcessing={isProcessing}
           isProcessingAd={isProcessingAd}
@@ -89,7 +89,7 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
 
       {!isProcessing && (
         <ImageActions 
-          onUpscale={handleUpscale}
+          onUpscale={handleUpscaleRequest}
           onCrop={() => setIsCropDialogOpen(true)}
           onResize={() => setIsResizeDialogOpen(true)}
           onEdit={() => setIsEditDialogOpen(true)}
@@ -146,13 +146,13 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       <QualityDialog
         isOpen={isQualityDialogOpen}
         onOpenChange={setIsQualityDialogOpen}
-        onWatchAd={handleWatchAdForQuality}
-        onBePremium={handleBePremiumForQuality}
+        onWatchAd={handleWatchAdForQualityRequest}
+        onBePremium={handleBePremiumForQualityRequest}
       />
 
       <AdCompletedDialog
         isOpen={isAdWatchedDialogOpen}
-        onOpenChange={setIsAdWatchedDialogOpen}
+        onOpenChange={() => handleAdWatched()}
         onContinue={handleAdWatched}
       />
     </div>
