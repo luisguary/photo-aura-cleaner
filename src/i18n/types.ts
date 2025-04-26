@@ -53,8 +53,9 @@ export type TranslationKey =
   | 'upscale2x'
   | 'upscale4x'
   | 'chooseUpscaleAmount'
-  | 'appTitle';
+  | 'appTitle'
+  | 'cancel';
 
-export type Translation = Record<TranslationKey, string>;
-export type Language = 'en' | 'es' | 'pt' | 'fr' | 'de' | 'it' | 'hi' | 'ar';
-
+export interface Translation {
+  [key: string]: string;
+}

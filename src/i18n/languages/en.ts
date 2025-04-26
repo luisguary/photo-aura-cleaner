@@ -55,5 +55,6 @@ export const en: Translation = {
   upscale2x: '2x Upscale',
   upscale4x: '4x Upscale',
   chooseUpscaleAmount: 'Choose upscale amount',
-  appTitle: 'Quitar Fondo Pro'
+  appTitle: 'Quitar Fondo Pro',
+  cancel: 'Cancel'
 };

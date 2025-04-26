@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from "./ui/button";
 import { ArrowUpCircle, Crop, MinusCircle, Edit, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -38,16 +38,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
   // Function to reset all states related to upscaling
   const resetUpscaleStates = useCallback(() => {
     setIsProcessingAd(false);
-    setIsUpscaleDialogOpen(false);
-    setIsUpscalePremiumDialogOpen(false);
+    setSelectedScale(2); // Reset to default value
   }, []);
-
-  // Effect to make sure the component state is reset when unmounted
-  useEffect(() => {
-    return () => {
-      resetUpscaleStates();
-    };
-  }, [resetUpscaleStates]);
 
   const handleUpscaleClick = () => {
     setIsUpscaleDialogOpen(true);
@@ -55,22 +47,34 @@ const ImageActions: React.FC<ImageActionsProps> = ({
 
   const handleScaleSelect = (scale: number) => {
     setSelectedScale(scale);
+    setIsUpscaleDialogOpen(false);
+    
     if (isPremium) {
-      setIsUpscaleDialogOpen(false);
       onUpscale(scale);
       toast({
         title: t('upscaleImage'),
         description: `${t('upscaleAction')} ${scale}x`,
       });
     } else {
-      setIsUpscaleDialogOpen(false);
-      setIsUpscalePremiumDialogOpen(true);
+      // Delay showing premium dialog to ensure first dialog is fully closed
+      setTimeout(() => {
+        setIsUpscalePremiumDialogOpen(true);
+      }, 100);
     }
   };
 
-  const handleWatchAd = () => {
-    setIsProcessingAd(true);
+  const handleCloseUpscaleDialog = () => {
+    setIsUpscaleDialogOpen(false);
+  };
+
+  const handleClosePremiumDialog = () => {
     setIsUpscalePremiumDialogOpen(false);
+    resetUpscaleStates();
+  };
+
+  const handleWatchAd = () => {
+    setIsUpscalePremiumDialogOpen(false);
+    setIsProcessingAd(true);
     
     toast({
       title: t('loadingAd'),
@@ -140,10 +144,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       <Dialog 
         open={isUpscaleDialogOpen} 
         onOpenChange={(open) => {
-          setIsUpscaleDialogOpen(open);
-          // If dialog is closed, reset states
           if (!open) {
-            resetUpscaleStates();
+            handleCloseUpscaleDialog();
           }
         }}
       >
@@ -170,6 +172,15 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               {t('upscale4x')}
             </Button>
           </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleCloseUpscaleDialog}
+              className="w-full"
+            >
+              {t('cancel') || 'Cancel'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -177,10 +188,8 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       <AlertDialog 
         open={isUpscalePremiumDialogOpen} 
         onOpenChange={(open) => {
-          setIsUpscalePremiumDialogOpen(open);
-          // When dialog is closed, reset all states to restore app functionality
           if (!open) {
-            resetUpscaleStates();
+            handleClosePremiumDialog();
           }
         }}
       >
@@ -191,7 +200,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               {t('watchAdToUse')}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="flex flex-col gap-2">
             <Button 
               variant="outline" 
               className="w-full" 
@@ -211,7 +220,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
             variant="ghost" 
             size="icon" 
             className="absolute right-4 top-4 rounded-full" 
-            onClick={() => resetUpscaleStates()}
+            onClick={handleClosePremiumDialog}
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
