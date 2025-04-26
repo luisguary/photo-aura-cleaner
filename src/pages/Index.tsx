@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion'; // Add this import
 import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
