@@ -58,7 +58,7 @@ const PricingPage = () => {
           damping: 20,
           duration: 0.3
         }}
-        className="absolute top-4 right-4 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        className="absolute top-8 right-8 z-50 bg-gray-100 dark:bg-gray-800 rounded-full p-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
       >
         <X className="h-6 w-6 text-gray-600 dark:text-gray-300" />
       </motion.button>
@@ -122,3 +122,4 @@ const PricingPage = () => {
 };
 
 export default PricingPage;
+
