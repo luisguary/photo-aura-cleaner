@@ -1,3 +1,4 @@
+
 import { Translation } from '../types';
 
 export const es: Translation = {
@@ -27,6 +28,7 @@ export const es: Translation = {
   continue: "Continuar",
   highQualityDownload: "Descarga en Alta Calidad",
   loadingAd: "Cargando anuncio...",
+  loading: "Cargando...",
   pleaseWait: "Por favor espera...",
   upscaleImage: "Escalar Imagen",
   chooseUpscaleAmount: "Elige la cantidad de escalado",
@@ -66,5 +68,11 @@ export const es: Translation = {
   linkCopiedDescription: "El enlace ha sido copiado al portapapeles",
   shareApp: "Compartir App",
   appVersion: "Versión de la App",
-  selectCustomBackground: "Seleccionar Fondo Personalizado"
+  selectCustomBackground: "Seleccionar Fondo Personalizado",
+  watermarkWillBeRemoved: "La marca de agua será eliminada",
+  errorShowingAd: "Error al mostrar el anuncio",
+  premiumUser: "Usuario Premium",
+  watermarkAutomaticallyRemoved: "Marca de agua eliminada automáticamente",
+  welcomeToPremium: "¡Bienvenido a Premium!",
+  youAreNowPremiumUser: "Ahora eres un usuario Premium y no verás marcas de agua"
 };

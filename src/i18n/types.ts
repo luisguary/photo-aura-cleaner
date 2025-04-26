@@ -1,3 +1,4 @@
+
 export type TranslationKey =
   | 'appTitle'
   | 'uploadImage'
@@ -22,6 +23,7 @@ export type TranslationKey =
   | 'resizeImage'
   | 'editImage'
   | 'loadingAd'
+  | 'loading'
   | 'adCompletedThankYou'
   | 'becomePremiumUser'
   | 'highQualityDownload'
@@ -64,7 +66,13 @@ export type TranslationKey =
   | 'watchAdRemoveWatermark'
   | 'processingImageWait'
   | 'success'
-  | 'enhancingImage';
+  | 'enhancingImage'
+  | 'watermarkWillBeRemoved'
+  | 'errorShowingAd'
+  | 'premiumUser'
+  | 'watermarkAutomaticallyRemoved'
+  | 'welcomeToPremium'
+  | 'youAreNowPremiumUser';
 
 export type Translation = {
   [key in TranslationKey]: string;

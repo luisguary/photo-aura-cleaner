@@ -1,5 +1,5 @@
 
-import { AdMob, AdOptions, RewardAdOptions, AdLoadInfo } from '@capacitor-community/admob';
+import { AdMob, RewardAdOptions } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 import { useCallback, useState } from 'react';
 import { toast } from '@/hooks/use-toast';
@@ -30,7 +30,8 @@ export const useRewardedAd = () => {
       setIsLoading(false);
       
       // Check if the user completed watching the ad
-      if (result.reward) {
+      // The result.rewarded property indicates if the user should get the reward
+      if (result && result.rewarded) {
         toast({
           title: t('success'),
           description: t('watermarkWillBeRemoved'),
@@ -39,7 +40,7 @@ export const useRewardedAd = () => {
       } else {
         toast({
           title: t('error'),
-          description: t('watchEntireAdToRemoveWatermark'),
+          description: t('watchAdToRemoveWatermark'),
           variant: "destructive"
         });
         return false;

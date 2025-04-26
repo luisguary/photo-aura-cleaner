@@ -1,3 +1,4 @@
+
 import { Translation } from '../types';
 
 export const en: Translation = {
@@ -28,6 +29,7 @@ export const en: Translation = {
   adCompleted: "Ad Completed!",
   continue: "Continue",
   loadingAd: "Loading Ad...",
+  loading: "Loading...",
   failedToProcess: "Failed to process image. Please try again.",
   becomePremiumUser: "Become a Premium User",
   highQualityDownload: "High Quality Download",
@@ -66,5 +68,11 @@ export const en: Translation = {
   shareApp: "Share App",
   appVersion: "App Version",
   uploadCustomBackground: "Upload Custom Background",
-  selectCustomBackground: "Select Custom Background"
+  selectCustomBackground: "Select Custom Background",
+  watermarkWillBeRemoved: "Watermark will be removed",
+  errorShowingAd: "Error showing advertisement",
+  premiumUser: "Premium User",
+  watermarkAutomaticallyRemoved: "Watermark automatically removed",
+  welcomeToPremium: "Welcome to Premium!",
+  youAreNowPremiumUser: "You are now a Premium user and won't see watermarks"
 };
