@@ -60,7 +60,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       onUpscale(scale);
       toast({
         title: t('upscaleImage'),
-        description: `${t('upscale')} ${scale}x`,
+        description: `${t('upscaleAction')} ${scale}x`,
       });
     } else {
       setIsUpscaleDialogOpen(false);
@@ -83,7 +83,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
       onUpscale(selectedScale);
       toast({
         title: t('adCompletedThankYou'),
-        description: `${t('upscale')} ${selectedScale}x`,
+        description: `${t('upscaleAction')} ${selectedScale}x`,
       });
     }, 2000);
   };
@@ -93,7 +93,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
     onUpscale(selectedScale);
     toast({
       title: t('becomePremiumUser'),
-      description: `${t('upscale')} ${selectedScale}x`,
+      description: `${t('upscaleAction')} ${selectedScale}x`,
     });
   };
 
