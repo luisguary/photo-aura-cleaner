@@ -41,7 +41,7 @@ export const UpscalePremiumDialog = ({
             className="w-full bg-[#9b87f5] hover:bg-[#8b77e5]" 
             onClick={onBePremium}
           >
-            {t('becomePremium')}
+            {t('becomePremiumUser')}
           </Button>
         </AlertDialogFooter>
         <Button 

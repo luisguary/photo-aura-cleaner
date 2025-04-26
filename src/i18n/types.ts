@@ -1,3 +1,4 @@
+
 export type TranslationKey =
   | 'appTitle'
   | 'uploadImage'
@@ -41,7 +42,31 @@ export type TranslationKey =
   | 'upscale2x'
   | 'upscale4x'
   | 'upscaleImage'
-  | 'upscaleAction';
+  | 'upscaleAction'
+  | 'orDragDrop'
+  | 'supportedFormats'
+  | 'settings'
+  | 'language'
+  | 'english'
+  | 'spanish'
+  | 'transparent'
+  | 'color'
+  | 'customImage'
+  | 'uploadCustomBackground'
+  | 'linkCopied'
+  | 'linkCopiedDescription'
+  | 'shareApp'
+  | 'appVersion'
+  | 'selectImageToEdit'
+  | 'fixBlurryPhoto'
+  | 'fixBlurryPhotoAI'
+  | 'watchAdToFix'
+  | 'becomePremium'
+  | 'watchAdRemoveWatermark'
+  | 'processingImageWait'
+  | 'success'
+  | 'enhancingImage'
+  | 'watchAdHighQuality';
 
 export type Translation = {
   [key in TranslationKey]: string;

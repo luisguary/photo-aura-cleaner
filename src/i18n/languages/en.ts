@@ -1,3 +1,4 @@
+
 import { Translation } from '../types';
 
 export const en: Translation = {
@@ -26,7 +27,6 @@ export const en: Translation = {
   watchAdToUse: "Watch an ad to use this feature",
   watchAdHighQuality: "Watch Ad & Download High Quality",
   adCompleted: "Ad Completed!",
-  adCompletedThankYou: "Thank you for watching the ad!",
   continue: "Continue",
   loadingAd: "Loading Ad...",
   failedToProcess: "Failed to process image. Please try again.",
@@ -52,4 +52,19 @@ export const en: Translation = {
   scalingError: "Could not scale the image. Please try again.",
   retry: "Retry",
   error: "Error",
+  share: "Share",
+  selectImageToEdit: "Select an image to edit",
+  fixBlurryPhoto: "Fix Blurry Photo",
+  fixBlurryPhotoAI: "Fix Blurry Photo with AI",
+  watchAdToFix: "Watch Ad to Fix",
+  becomePremium: "Become Premium",
+  watchAdRemoveWatermark: "Watch Ad to Remove Watermark",
+  processingImageWait: "Processing your image, please wait",
+  success: "Success",
+  enhancingImage: "Enhancing image quality",
+  linkCopied: "Link Copied",
+  linkCopiedDescription: "Link has been copied to clipboard",
+  shareApp: "Share App",
+  appVersion: "App Version",
+  uploadCustomBackground: "Upload Custom Background"
 };

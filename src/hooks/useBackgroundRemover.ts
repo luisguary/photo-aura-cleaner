@@ -15,7 +15,7 @@ export const useBackgroundRemover = (initialImage: string) => {
       setProgress(t('processingImage'));
       toast({
         title: t('processingImage'),
-        description: t('processingImageWait'),
+        description: t('pleaseWait'),
       });
 
       const img = new Image();
@@ -26,8 +26,8 @@ export const useBackgroundRemover = (initialImage: string) => {
       const resultUrl = URL.createObjectURL(resultBlob);
 
       toast({
-        title: t('success'),
-        description: t('imageEnhanced'),
+        title: t('imageEnhanced'),
+        description: t('imageEnhancedDescription'),
       });
 
       return resultUrl;

@@ -34,7 +34,7 @@ export const WatermarkDialog = ({
             className="w-full" 
             onClick={onWatchAd}
           >
-            {t('watchAdRemoveWatermark')}
+            {t('watchAd')}
           </Button>
           <Button 
             variant="default" 

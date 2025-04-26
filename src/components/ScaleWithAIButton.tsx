@@ -308,7 +308,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
             </Button>
             <Button 
               variant="outline"
-              onClick={() => navigate('/pricing')}
+              onClick={() => window.location.href = '/pricing'}
               className="w-full"
             >
               {t('becomePremiumUser')}

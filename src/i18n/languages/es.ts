@@ -1,8 +1,11 @@
+
 import { Translation } from '../types';
 
 export const es: Translation = {
   appTitle: "Photo Aura Cleaner",
   uploadImage: "Subir Imagen",
+  orDragDrop: "o arrastrar y soltar",
+  supportedFormats: "Formatos soportados: JPG, PNG, WebP",
   removeBackground: "Remover Fondo",
   download: "Descargar",
   downloadHighQuality: "Descargar en Alta Calidad",
@@ -45,4 +48,23 @@ export const es: Translation = {
   watchAd: "Ver Anuncio",
   scalingError: "No se pudo escalar la imagen. Intenta de nuevo.",
   retry: "Reintentar",
+  share: "Compartir",
+  adCompleted: "¡Anuncio Completado!",
+  settings: "Configuración",
+  language: "Idioma",
+  english: "Inglés",
+  spanish: "Español",
+  selectImageToEdit: "Selecciona una imagen para editar",
+  fixBlurryPhoto: "Arreglar Foto Borrosa",
+  fixBlurryPhotoAI: "Arreglar Foto Borrosa con IA",
+  watchAdToFix: "Ver Anuncio para Arreglar",
+  becomePremium: "Hazte Premium",
+  watchAdRemoveWatermark: "Ver Anuncio para Eliminar Marca de Agua",
+  processingImageWait: "Procesando tu imagen, por favor espera",
+  success: "Éxito",
+  enhancingImage: "Mejorando calidad de imagen",
+  linkCopied: "Enlace Copiado",
+  linkCopiedDescription: "El enlace ha sido copiado al portapapeles",
+  shareApp: "Compartir App",
+  appVersion: "Versión de la App"
 };

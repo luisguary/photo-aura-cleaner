@@ -90,7 +90,7 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
                 handleDeblurRequest();
               }}
             >
-              {t('becomePremiumUser')}
+              {t('becomePremium')}
             </Button>
           </div>
         </DialogContent>

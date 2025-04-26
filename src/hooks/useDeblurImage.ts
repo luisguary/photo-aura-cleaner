@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { toast } from './use-toast';
 import { useTranslation } from './useTranslation';
-import { RunwareService, GeneratedImage } from '@/services/RunwareService';
+import { RunwareService } from '@/services/RunwareService';
 
 interface UseDeblurImageProps {
   isPremium: boolean;
@@ -21,7 +21,7 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
       setIsProcessing(true);
       toast({
         title: t('processingImage'),
-        description: t('enhancingImage')
+        description: t('pleaseWait')
       });
 
       const result = await runwareService.generateImage({
@@ -34,8 +34,8 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
       onSuccess(result.imageURL);
       
       toast({
-        title: t('success'),
-        description: t('imageEnhanced')
+        title: t('imageEnhanced'),
+        description: t('imageEnhancedDescription')
       });
     } catch (error) {
       console.error('Error processing image:', error);
