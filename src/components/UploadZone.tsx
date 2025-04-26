@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface UploadZoneProps {
   onImageSelected: (imageUrl: string, fileName: string) => void;
@@ -10,6 +11,7 @@ interface UploadZoneProps {
 const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -45,10 +47,6 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     }
   };
 
-  const buttonStyles = selectedFileName 
-    ? "bg-[#28A745] hover:bg-[#218838]" 
-    : "bg-[#007BFF] hover:bg-[#339CFF]";
-
   return (
     <div 
       className="flex justify-center items-center w-full"
@@ -58,18 +56,28 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     >
       <Button
         variant="default"
-        className={`${buttonStyles} ${isDragging ? 'ring-2 ring-blue-500' : ''} 
-        px-20 py-6 text-lg flex flex-col items-center justify-center gap-3 w-full max-w-xl 
-        text-center text-white font-semibold rounded-lg shadow-md transition-colors duration-300`}
+        size="lg"
+        className={`
+          relative overflow-hidden
+          ${isDragging ? 'ring-2 ring-primary' : ''} 
+          px-8 py-6 h-auto
+          w-full max-w-xl
+          bg-[#9b87f5] hover:bg-[#8b77e5] active:bg-[#7e69ab]
+          transition-all duration-200
+          shadow-lg hover:shadow-xl
+          flex items-center justify-center gap-4
+          text-base sm:text-lg font-medium text-white
+          rounded-lg
+        `}
         onClick={() => document.getElementById('fileInput')?.click()}
       >
-        <Upload className="w-8 h-8 mb-2" />
-        <span className="-mt-2 text-white font-semibold text-center tracking-tight">
+        <Upload className="w-6 h-6 flex-shrink-0" />
+        <span className="truncate">
           {selectedFileName 
-            ? `Selected image: ${selectedFileName.length > 20 
+            ? `Selected: ${selectedFileName.length > 20 
                 ? selectedFileName.substring(0, 17) + '...' 
                 : selectedFileName}`
-            : "Select an image to edit"}
+            : t('selectImageToEdit')}
         </span>
       </Button>
       <input
