@@ -1,4 +1,3 @@
-
 export type TranslationKey = 
   | 'aiImageEditor'
   | 'selectImageToEdit'
@@ -52,7 +51,8 @@ export type TranslationKey =
   | 'becomePremium'
   | 'upscale2x'
   | 'upscale4x'
-  | 'chooseUpscaleAmount';
+  | 'chooseUpscaleAmount'
+  | 'appTitle';
 
 export const translations = {
   en: {
@@ -108,7 +108,8 @@ export const translations = {
     becomePremium: 'Become Premium',
     upscale2x: '2x Upscale',
     upscale4x: '4x Upscale',
-    chooseUpscaleAmount: 'Choose upscale amount'
+    chooseUpscaleAmount: 'Choose upscale amount',
+    appTitle: 'AI Image Editor'
   },
   es: {
     aiImageEditor: 'Editor de Imágenes IA',
@@ -163,7 +164,8 @@ export const translations = {
     becomePremium: 'Hazte Premium',
     upscale2x: 'Escalar 2x',
     upscale4x: 'Escalar 4x',
-    chooseUpscaleAmount: 'Elige la cantidad de escalado'
+    chooseUpscaleAmount: 'Elige la cantidad de escalado',
+    appTitle: 'Editor de Imágenes IA'
   }
   // Add other languages here with translations
 };
