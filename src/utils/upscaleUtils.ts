@@ -34,8 +34,11 @@ export const upscaleImage = async (imageBlob: Blob, scale: number): Promise<Blob
     
     // Download the upscaled image
     const upscaledResponse = await fetch(data.output_url);
-    const upscaledBlob = await upscaledResponse.blob();
+    if (!upscaledResponse.ok) {
+      throw new Error(`Failed to download upscaled image: ${upscaledResponse.statusText}`);
+    }
     
+    const upscaledBlob = await upscaledResponse.blob();
     return upscaledBlob;
   } catch (error) {
     console.error('Error upscaling image:', error);

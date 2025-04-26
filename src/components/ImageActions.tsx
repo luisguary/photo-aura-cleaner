@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "./ui/button";
 import { ArrowUpCircle, Crop, MinusCircle, Edit, X } from "lucide-react";
-import { toast } from "./ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { 
   Dialog, 
   DialogContent, 
@@ -120,6 +120,7 @@ const ImageActions: React.FC<ImageActionsProps> = ({
         Edit Image
       </Button>
 
+      {/* First dialog - Upscale selection */}
       <Dialog open={isUpscaleDialogOpen} onOpenChange={setIsUpscaleDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -144,19 +145,21 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               Upscale 4x
             </Button>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsUpscaleDialogOpen(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
+          {/* No need for a custom close button - the DialogContent already includes one */}
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={isUpscalePremiumDialogOpen} onOpenChange={setIsUpscalePremiumDialogOpen}>
+      {/* Second dialog - Premium/Ad options */}
+      <AlertDialog 
+        open={isUpscalePremiumDialogOpen} 
+        onOpenChange={(open) => {
+          setIsUpscalePremiumDialogOpen(open);
+          // Ensure isProcessingAd is reset when dialog is closed
+          if (!open && isProcessingAd) {
+            setIsProcessingAd(false);
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Upscale Image with Artificial Intelligence</AlertDialogTitle>
