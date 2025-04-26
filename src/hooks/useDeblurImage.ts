@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { toast } from './use-toast';
+import { useTranslation } from './useTranslation';
 
 interface UseDeblurImageProps {
   isPremium: boolean;
@@ -10,13 +11,14 @@ interface UseDeblurImageProps {
 export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
+  const { t } = useTranslation();
 
   const processImage = async (imageUrl: string) => {
     try {
       setIsProcessing(true);
       toast({
-        title: "Processing image...",
-        description: "Enhancing image sharpness with AI..."
+        title: t('processingImage'),
+        description: t('enhancingImage')
       });
 
       const formData = new FormData();
@@ -38,15 +40,15 @@ export const useDeblurImage = ({ isPremium, onSuccess }: UseDeblurImageProps) =>
       onSuccess(result.output_url);
       
       toast({
-        title: "Success!",
-        description: "Your image has been enhanced"
+        title: t('success'),
+        description: t('imageEnhanced')
       });
     } catch (error) {
       console.error('Error processing image:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to process the image. Please try again."
+        title: t('error'),
+        description: t('failedToProcess')
       });
     } finally {
       setIsProcessing(false);

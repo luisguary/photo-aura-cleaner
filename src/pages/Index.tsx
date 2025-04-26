@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
@@ -6,11 +7,13 @@ import { Button } from '../components/ui/button';
 import { Moon, Sun } from 'lucide-react';
 import { Settings } from '../components/Settings';
 import { DeblurButton } from '../components/DeblurButton';
+import { useTranslation } from '../hooks/useTranslation';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check system preference
@@ -43,7 +46,7 @@ const Index = () => {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
             <h1 className="text-3xl md:text-4xl font-bold text-brand-blue dark:text-white">
-              Quitar Fondo Pro
+              {t('appTitle')}
             </h1>
           </div>
           <Button

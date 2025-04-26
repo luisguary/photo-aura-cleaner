@@ -5,6 +5,7 @@ import { useDeblurImage } from "@/hooks/useDeblurImage";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "./ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DeblurButtonProps {
   isPremium: boolean;
@@ -13,6 +14,8 @@ interface DeblurButtonProps {
 }
 
 export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurButtonProps) => {
+  const { t } = useTranslation();
+  
   const {
     isProcessing,
     showPremiumDialog,
@@ -28,8 +31,8 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
     setShowPremiumDialog(false);
     // Simulate ad watching
     toast({
-      title: "Loading ad...",
-      description: "Please wait while the ad loads"
+      title: t('loadingAd'),
+      description: t('pleaseWait')
     });
     
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -56,7 +59,7 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
         className={`bg-[#9b87f5] hover:bg-[#8b77e5] text-white ${className}`}
       >
         <Image className="w-4 h-4 mr-2" />
-        Fix Blurry Photo
+        {t('fixBlurryPhoto')}
       </Button>
 
       {/* Premium/Ad Dialog */}
@@ -66,9 +69,9 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Fix Blurry Photo with AI</DialogTitle>
+            <DialogTitle>{t('fixBlurryPhotoAI')}</DialogTitle>
             <DialogDescription>
-              Watch an ad to use this feature, or become a Premium user.
+              {t('watchAdToUse')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 gap-4 py-4">
@@ -77,7 +80,7 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
               className="w-full" 
               onClick={handleWatchAd}
             >
-              Watch ad to fix photo
+              {t('watchAdToFix')}
             </Button>
             <Button 
               variant="default" 
@@ -87,7 +90,7 @@ export const DeblurButton = ({ isPremium, onImageProcessed, className }: DeblurB
                 handleDeblurRequest();
               }}
             >
-              Become Premium user
+              {t('becomePremiumUser')}
             </Button>
           </div>
         </DialogContent>
