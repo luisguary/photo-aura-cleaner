@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
@@ -6,6 +5,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Moon, Sun } from 'lucide-react';
 import { Settings } from '../components/Settings';
+import { DeblurButton } from '../components/DeblurButton';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -71,7 +71,19 @@ const Index = () => {
         <Card className="bg-white dark:bg-[#2A2F3C] backdrop-blur-sm shadow-xl border-0">
           <CardContent className="p-6">
             {!selectedImage ? (
-              <UploadZone onImageSelected={handleImageSelected} />
+              <div className="space-y-4">
+                <UploadZone onImageSelected={handleImageSelected} />
+                <div className="flex justify-center mt-4">
+                  <DeblurButton
+                    isPremium={false}
+                    onImageProcessed={(url) => {
+                      setSelectedImage(url);
+                      setSelectedFileName("enhanced-image.jpg");
+                    }}
+                    className="ml-2"
+                  />
+                </div>
+              </div>
             ) : (
               <ImageEditor
                 initialImage={selectedImage}
