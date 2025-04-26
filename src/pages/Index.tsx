@@ -1,19 +1,20 @@
-
 import { useState, useEffect } from 'react';
 import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Crown } from 'lucide-react';
 import { Settings } from '../components/Settings';
 import { DeblurButton } from '../components/DeblurButton';
 import { useTranslation } from '../hooks/useTranslation';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check system preference
@@ -49,26 +50,46 @@ const Index = () => {
               {t('appTitle')}
             </h1>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              const newTheme = theme === 'light' ? 'dark' : 'light';
-              setTheme(newTheme);
-              if (newTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-              } else {
-                document.documentElement.classList.remove('dark');
-              }
-            }}
-            className="rounded-full"
-          >
-            {theme === 'light' ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => navigate('/pricing')}
+              className="bg-primary text-white flex items-center gap-2 hover:scale-105 transition-all duration-300"
+            >
+              <motion.div
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <Crown className="h-5 w-5" />
+              </motion.div>
+              Precios
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                const newTheme = theme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                if (newTheme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              }}
+              className="rounded-full"
+            >
+              {theme === 'light' ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
         </div>
         
         <Card className="bg-white dark:bg-[#2A2F3C] backdrop-blur-sm shadow-xl border-0">
