@@ -168,7 +168,6 @@ const ImageActions: React.FC<ImageActionsProps> = ({
               Upscale 4x
             </Button>
           </div>
-          {/* No need for a custom close button - the DialogContent already includes one */}
         </DialogContent>
       </Dialog>
 
