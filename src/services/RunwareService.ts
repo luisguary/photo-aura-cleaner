@@ -14,6 +14,8 @@ export interface GenerateImageParams {
   promptWeighting?: "compel" | "sdEmbeds";
   seed?: number | null;
   lora?: string[];
+  width?: number;
+  height?: number;
 }
 
 export interface GeneratedImage {
@@ -52,7 +54,11 @@ export class RunwareService {
         if (response.error || response.errors) {
           console.error("WebSocket error response:", response);
           const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
-          toast.error(errorMessage);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: errorMessage
+          });
           return;
         }
 
@@ -75,7 +81,11 @@ export class RunwareService {
 
       this.ws.onerror = (error) => {
         console.error("WebSocket error:", error);
-        toast.error("Connection error. Please try again.");
+        toast({
+          variant: "destructive",
+          title: "Connection Error",
+          description: "Please try again."
+        });
         reject(error);
       };
 
