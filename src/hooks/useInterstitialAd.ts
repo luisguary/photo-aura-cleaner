@@ -1,5 +1,5 @@
 
-import { AdMob, AdOptions, AdLoadInfo } from '@capacitor-community/admob';
+import { AdMob, AdOptions } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 import { useCallback } from 'react';
 
@@ -19,10 +19,10 @@ export const useInterstitialAd = () => {
       // Prepare the interstitial
       await AdMob.prepareInterstitial(options);
       
-      // Get the load info to ensure ad is ready
-      const loadInfo: AdLoadInfo = await AdMob.isInterstitialReady();
+      // Check if the ad is ready using the correct method
+      const isReady = await AdMob.isLoaded();
       
-      if (loadInfo.isReady) {
+      if (isReady) {
         // Show the interstitial ad
         await AdMob.showInterstitial();
       }
@@ -34,4 +34,3 @@ export const useInterstitialAd = () => {
 
   return { showInterstitial };
 };
-
