@@ -1,14 +1,13 @@
 
 import { useState } from 'react';
-import { toast } from '@/hooks/use-toast';
-import { useTranslation } from '@/hooks/useTranslation';
 import { useWatermark } from './useWatermark';
 import { useBackgroundSelection } from './useBackgroundSelection';
 import { useImageProcessing } from './useImageProcessing';
 import { useDialogs } from './useDialogs';
+import { useDownload } from './useDownload';
+import { useUpscaleImage } from './useUpscaleImage';
 
 export const useImageEditor = (initialImage: string, fileName: string) => {
-  const { t } = useTranslation();
   const [isProcessingAd, setIsProcessingAd] = useState(false);
 
   const {
@@ -28,9 +27,9 @@ export const useImageEditor = (initialImage: string, fileName: string) => {
   } = useBackgroundSelection();
 
   const {
-    isProcessing,
+    isProcessing: isImageProcessing,
     editedImage,
-    progress,
+    progress: imageProgress,
     handleRemoveBackground,
     setEditedImage,
   } = useImageProcessing(initialImage);
@@ -39,144 +38,88 @@ export const useImageEditor = (initialImage: string, fileName: string) => {
     isCropDialogOpen,
     isResizeDialogOpen,
     isEditDialogOpen,
-    isQualityDialogOpen,
     isAdWatchedDialogOpen,
     setIsCropDialogOpen,
     setIsResizeDialogOpen,
     setIsEditDialogOpen,
-    setIsQualityDialogOpen,
     setIsAdWatchedDialogOpen,
   } = useDialogs();
 
-  const handleUpscale = async (scale: number) => {
-    try {
-      setIsProcessing(true);
-      setProgress(`Upscaling image to ${scale}x...`);
+  const {
+    isQualityDialogOpen,
+    isProcessingAd: isDownloadProcessingAd,
+    setIsQualityDialogOpen,
+    handleQualityDownload,
+    handleWatchAdForQuality,
+    handleBePremiumForQuality,
+    handleDownload,
+  } = useDownload({ 
+    isPremiumUser, 
+    onBePremium: handleBePremium 
+  });
 
-      const imageToUpscale = editedImage || initialImage;
-      
-      const response = await fetch(imageToUpscale);
-      const imageBlob = await response.blob();
-      
-      const upscaledBlob = await upscaleImage(imageBlob, scale);
-      
-      if (upscaledBlob) {
-        const upscaledUrl = URL.createObjectURL(upscaledBlob);
-        setEditedImage(upscaledUrl);
-        
-        toast({
-          title: "Done!",
-          description: `Image successfully upscaled to ${scale}x`,
-        });
-      }
-    } catch (error) {
-      console.error('Error upscaling image:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "There was a problem upscaling the image. Please try again.",
-      });
-    } finally {
-      setIsProcessing(false);
-      setProgress('');
-    }
-  };
+  const {
+    isProcessing: isUpscaleProcessing,
+    progress: upscaleProgress,
+    handleUpscale,
+  } = useUpscaleImage();
 
   const handleWatchAd = () => {
     setIsWatermarkDialogOpen(false);
-    setProgress('Loading ad...');
     setIsProcessingAd(true);
     setTimeout(() => {
       setIsProcessingAd(false);
-      setProgress('');
       setIsAdWatchedDialogOpen(true);
     }, 2000);
   };
 
   const handleAdWatched = () => {
     setIsAdWatchedDialogOpen(false);
-    setShowWatermark(false);
-    toast({
-      title: "Thank you!",
-      description: "Watermark successfully removed",
-    });
   };
 
-  const handleQualityDownload = () => {
-    if (isPremiumUser) {
-      handleDownload(true);
-    } else {
-      setIsQualityDialogOpen(true);
+  const handleUpscaleRequest = async (scale: number) => {
+    const imageToUpscale = editedImage || initialImage;
+    const upscaledUrl = await handleUpscale(imageToUpscale, scale);
+    if (upscaledUrl) {
+      setEditedImage(upscaledUrl);
     }
   };
 
-  const handleWatchAdForQuality = () => {
-    setIsQualityDialogOpen(false);
-    setIsProcessingAd(true);
-    setProgress('Loading ad...');
-    
-    setTimeout(() => {
-      setIsProcessingAd(false);
-      setProgress('');
-      handleDownload(true);
-      toast({
-        title: "Thank you for watching the ad!",
-        description: "Your image will download in maximum quality",
-      });
-    }, 2000);
+  const handleDownloadRequest = (isHighQuality: boolean) => {
+    handleDownload(editedImage || initialImage, fileName, isHighQuality);
   };
 
-  const handleBePremiumForQuality = () => {
-    setIsQualityDialogOpen(false);
-    handleBePremium();
-    handleDownload(true);
-    toast({
-      title: "Welcome to Premium!",
-      description: "You can now download all your images in maximum quality",
-    });
+  const handleQualityDownloadRequest = () => {
+    handleQualityDownload(handleDownloadRequest);
   };
 
-  const handleDownload = async (isHighQuality: boolean) => {
-    try {
-      const response = await fetch(editedImage || initialImage);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `enhanced_${fileName}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading image:', error);
-      toast({
-        variant: "destructive",
-        title: t('error'),
-        description: t('failedToProcess'),
-      });
-    }
+  const handleWatchAdForQualityRequest = () => {
+    handleWatchAdForQuality(handleDownloadRequest);
   };
 
-  const handleCropComplete = async (croppedImage: string) => {
+  const handleBePremiumForQualityRequest = () => {
+    handleBePremiumForQuality(handleDownloadRequest);
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
     setEditedImage(croppedImage);
     setIsCropDialogOpen(false);
   };
 
-  const handleResizeComplete = async (resizedImage: string) => {
+  const handleResizeComplete = (resizedImage: string) => {
     setEditedImage(resizedImage);
     setIsResizeDialogOpen(false);
   };
 
-  const handleEditComplete = async (editedImg: string) => {
+  const handleEditComplete = (editedImg: string) => {
     setEditedImage(editedImg);
     setIsEditDialogOpen(false);
   };
 
   return {
-    isProcessing,
+    isProcessing: isImageProcessing || isUpscaleProcessing,
     editedImage,
-    progress,
+    progress: imageProgress || upscaleProgress,
     selectedBackground,
     customBackground,
     showWatermark,
@@ -184,7 +127,7 @@ export const useImageEditor = (initialImage: string, fileName: string) => {
     isAdWatchedDialogOpen,
     isPremiumUser,
     isQualityDialogOpen,
-    isProcessingAd,
+    isProcessingAd: isProcessingAd || isDownloadProcessingAd,
     isCropDialogOpen,
     isResizeDialogOpen,
     isEditDialogOpen,
@@ -195,14 +138,14 @@ export const useImageEditor = (initialImage: string, fileName: string) => {
     setIsEditDialogOpen,
     setSelectedBackground,
     handleRemoveBackground,
-    handleUpscale,
+    handleUpscaleRequest,
     handleWatermarkRemoveClick,
     handleWatchAd,
     handleAdWatched,
     handleBePremium,
-    handleQualityDownload,
-    handleWatchAdForQuality,
-    handleBePremiumForQuality,
+    handleQualityDownloadRequest,
+    handleWatchAdForQualityRequest,
+    handleBePremiumForQualityRequest,
     handleCustomBackground,
     handleCropComplete,
     handleResizeComplete,
