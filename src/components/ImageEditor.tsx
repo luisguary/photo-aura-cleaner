@@ -1,23 +1,20 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Eraser, RotateCcw, Download, Loader, X } from 'lucide-react';
+import { Eraser, RotateCcw } from 'lucide-react';
 import { removeBackground } from '../utils/imageUtils';
-import { upscaleImage } from '../utils/upscaleUtils';
 import { toast } from './ui/use-toast';
+import { useTranslation } from '@/hooks/useTranslation';
+import { ImageEditorProps } from '@/types/image-editor';
+
 import BackgroundSelector from './BackgroundSelector';
 import ImageActions from './ImageActions';
 import CropDialog from './CropDialog';
 import ResizeDialog from './ResizeDialog';
 import EditDialog from './EditDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
-import { useTranslation } from '@/hooks/useTranslation';
-
-interface ImageEditorProps {
-  initialImage: string;
-  fileName: string;
-  onReset: () => void;
-}
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { ImagePreview } from './image-editor/ImagePreview';
+import { DownloadButtons } from './image-editor/DownloadButtons';
 
 const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
   const { t } = useTranslation();
@@ -112,42 +109,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     }
   };
 
-  const handleCrop = () => {
-    setIsCropDialogOpen(true);
-  };
-
-  const handleCropComplete = (croppedImageUrl: string) => {
-    setEditedImage(croppedImageUrl);
-    toast({
-      title: "Image Cropped",
-      description: "Your image has been successfully cropped.",
-    });
-  };
-
-  const handleResize = () => {
-    setIsResizeDialogOpen(true);
-  };
-
-  const handleResizeComplete = (resizedImageUrl: string) => {
-    setEditedImage(resizedImageUrl);
-    toast({
-      title: "Image Resized",
-      description: "Your image has been successfully resized.",
-    });
-  };
-
-  const handleEdit = () => {
-    setIsEditDialogOpen(true);
-  };
-
-  const handleEditComplete = (editedImageUrl: string) => {
-    setEditedImage(editedImageUrl);
-    toast({
-      title: "Image Edited",
-      description: "Your image edits have been applied.",
-    });
-  };
-
   const handleWatermarkRemoveClick = () => {
     if (isPremiumUser) {
       setShowWatermark(false);
@@ -188,92 +149,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
       title: "Welcome to Premium!",
       description: "You are now a Premium user and won't see watermarks",
     });
-  };
-
-  const handleDownload = async (isHighQuality: boolean = false) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    img.onload = () => {
-      const maxDimension = isHighQuality ? 3840 : 1280;
-      let width = img.width;
-      let height = img.height;
-
-      if (width > maxDimension || height > maxDimension) {
-        const ratio = Math.min(maxDimension / width, maxDimension / height);
-        width *= ratio;
-        height *= ratio;
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      if (ctx) {
-        if (customBackground) {
-          const bgImg = new Image();
-          bgImg.onload = () => {
-            const scale = Math.max(canvas.width / bgImg.width, canvas.height / bgImg.height);
-            const x = (canvas.width - bgImg.width * scale) / 2;
-            const y = (canvas.height - bgImg.height * scale) / 2;
-            ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
-            
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            if (!isHighQuality && showWatermark) {
-              ctx.font = '16px Arial';
-              ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-              ctx.fillText('Remove Background Pro', 10, canvas.height - 10);
-            }
-
-            exportImage(canvas, isHighQuality);
-          };
-          bgImg.src = customBackground;
-        } else {
-          if (selectedBackground !== 'transparent') {
-            ctx.fillStyle = selectedBackground;
-            ctx.fillRect(0, 0, width, height);
-          }
-
-          ctx.drawImage(img, 0, 0, width, height);
-
-          if (!isHighQuality && showWatermark) {
-            ctx.font = '16px Arial';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillText('Remove Background Pro', 10, canvas.height - 10);
-          }
-
-          exportImage(canvas, isHighQuality);
-        }
-      }
-    };
-
-    img.src = editedImage || initialImage;
-  };
-
-  const exportImage = (canvas: HTMLCanvasElement, isHighQuality: boolean) => {
-    const format = selectedBackground === 'transparent' ? 'image/png' : 'image/jpeg';
-    const quality = isHighQuality ? 1.0 : 0.8;
-    
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `image-no-bg${format === 'image/png' ? '.png' : '.jpg'}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        toast({
-          title: "Download complete!",
-          description: isHighQuality 
-            ? "Image exported in maximum quality" 
-            : "Image exported in standard quality",
-        });
-      }
-    }, format, quality);
   };
 
   const handleQualityDownload = () => {
@@ -324,12 +199,13 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           disabled={isProcessing}
         >
           {isProcessing ? (
-            <Loader className="w-4 h-4 mr-2 animate-spin" />
+            <div className="w-4 h-4 mr-2 animate-spin" />
           ) : (
             <Eraser className="w-4 h-4 mr-2" />
           )}
           {t('removeBackground')}
         </Button>
+        
         <Button
           variant="outline"
           onClick={onReset}
@@ -338,74 +214,34 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
           <RotateCcw className="w-4 h-4 mr-2" />
           {t('reset')}
         </Button>
-        <Button
-          variant="default"
-          className="bg-[#9b87f5] hover:bg-[#8b77e5]"
-          onClick={handleQualityDownload}
-          disabled={isProcessing || isProcessingAd}
-        >
-          <Download className="w-4 h-4 mr-2" />
-          {isPremiumUser ? t('downloadHighQuality') : t('download')}
-        </Button>
+
+        <DownloadButtons 
+          onDownload={handleQualityDownload}
+          isPremiumUser={isPremiumUser}
+          isProcessing={isProcessing}
+          isProcessingAd={isProcessingAd}
+        />
       </div>
 
       {!isProcessing && (
         <ImageActions 
           onUpscale={handleUpscale}
-          onCrop={handleCrop}
-          onResize={handleResize}
-          onEdit={handleEdit}
+          onCrop={() => setIsCropDialogOpen(true)}
+          onResize={() => setIsResizeDialogOpen(true)}
+          onEdit={() => setIsEditDialogOpen(true)}
           isPremium={isPremiumUser}
         />
       )}
 
-      <div className="relative rounded-lg overflow-hidden border border-gray-200">
-        <div 
-          className="relative" 
-          style={{ 
-            backgroundColor: selectedBackground === 'custom' ? 'transparent' : selectedBackground,
-            backgroundImage: selectedBackground === 'transparent' ? 
-              'linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%)' : 
-              customBackground ? `url(${customBackground})` : 'none',
-            backgroundSize: selectedBackground === 'transparent' ? '20px 20px' : 'cover',
-            backgroundPosition: selectedBackground === 'transparent' ? '0 0, 0 10px, 10px -10px, -10px 0px' : 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        >
-          <img
-            src={editedImage || initialImage}
-            alt="Image being edited"
-            className="max-w-full h-auto"
-            style={{
-              opacity: isProcessing ? 0.5 : 1,
-            }}
-          />
-          {isProcessing && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9b87f5] mb-2"></div>
-              {progress && (
-                <div className="text-white bg-black/50 px-4 py-2 rounded-lg">
-                  {progress}
-                </div>
-              )}
-            </div>
-          )}
-          
-          {editedImage && showWatermark && (
-            <div className="absolute bottom-2 right-2 bg-black/40 text-white px-3 py-1 rounded flex items-center">
-              <span className="text-sm mr-2">Remove Background Pro</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-6 w-6 rounded-full hover:bg-white/20 p-1"
-                onClick={handleWatermarkRemoveClick}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
+      <ImagePreview 
+        image={editedImage || initialImage}
+        isProcessing={isProcessing}
+        progress={progress}
+        showWatermark={editedImage && showWatermark ? true : false}
+        selectedBackground={selectedBackground}
+        customBackground={customBackground}
+        onWatermarkRemove={handleWatermarkRemoveClick}
+      />
 
       {editedImage && (
         <BackgroundSelector

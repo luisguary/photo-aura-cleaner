@@ -59,3 +59,5 @@ export type TranslationKey =
 export interface Translation {
   [key: string]: string;
 }
+
+export type Language = 'en' | 'es' | 'pt' | 'fr' | 'de' | 'it' | 'hi' | 'ar';
