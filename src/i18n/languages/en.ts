@@ -1,4 +1,3 @@
-
 import { Translation } from '../types';
 
 export const en: Translation = {
@@ -66,5 +65,6 @@ export const en: Translation = {
   linkCopiedDescription: "Link has been copied to clipboard",
   shareApp: "Share App",
   appVersion: "App Version",
-  uploadCustomBackground: "Upload Custom Background"
+  uploadCustomBackground: "Upload Custom Background",
+  selectCustomBackground: "Select Custom Background"
 };

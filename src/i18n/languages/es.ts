@@ -1,4 +1,3 @@
-
 import { Translation } from '../types';
 
 export const es: Translation = {
@@ -66,5 +65,6 @@ export const es: Translation = {
   linkCopied: "Enlace Copiado",
   linkCopiedDescription: "El enlace ha sido copiado al portapapeles",
   shareApp: "Compartir App",
-  appVersion: "Versión de la App"
+  appVersion: "Versión de la App",
+  selectCustomBackground: "Seleccionar Fondo Personalizado"
 };
