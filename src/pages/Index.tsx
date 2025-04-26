@@ -12,6 +12,8 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { ScaleWithAIButton } from '@/components/ScaleWithAIButton';
+import { AdMobBanner } from '@/components/AdMobBanner';
+import { isPlatform } from '@capacitor/core';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -19,6 +21,11 @@ const Index = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Check if we're running on a device
+  const isMobileDevice = isPlatform('android') || isPlatform('ios');
+  // AdMob ID
+  const adMobBannerID = 'ca-app-pub-1145055690439051/7440147911';
 
   useEffect(() => {
     // Check system preference
@@ -132,6 +139,15 @@ const Index = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* AdMob Banner */}
+      {isMobileDevice && (
+        <AdMobBanner
+          adId={adMobBannerID}
+          position="bottom"
+          isTesting={true} // Set to false for production
+        />
+      )}
 
       <Settings />
     </div>
