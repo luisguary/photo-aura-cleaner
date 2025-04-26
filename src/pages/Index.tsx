@@ -5,8 +5,8 @@ import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Moon, Sun, Crown, ArrowUpCircle, X } from 'lucide-react';
-import { Settings } from '../components/Settings';
+import { Moon, Sun, Crown, Settings } from 'lucide-react';
+import { Settings as SettingsDialog } from '../components/Settings';
 import { DeblurButton } from '../components/DeblurButton';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [showSettings, setShowSettings] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -57,14 +58,15 @@ const Index = () => {
         {/* Logo and header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-blue dark:text-white">
+            <h1 className="text-2xl md:text-3xl font-bold text-brand-blue dark:text-white">
               {t('appTitle')}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Button
               onClick={() => navigate('/pricing')}
               className="bg-primary text-white flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              size="sm"
             >
               <motion.div
                 animate={{
@@ -76,9 +78,17 @@ const Index = () => {
                   ease: "easeInOut"
                 }}
               >
-                <Crown className="h-5 w-5" />
+                <Crown className="h-4 w-4" />
               </motion.div>
               Precios
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowSettings(true)}
+              className="rounded-full w-8 h-8"
+            >
+              <Settings className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -92,12 +102,12 @@ const Index = () => {
                   document.documentElement.classList.remove('dark');
                 }
               }}
-              className="rounded-full"
+              className="rounded-full w-8 h-8"
             >
               {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
+                <Moon className="h-4 w-4" />
               ) : (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-4 w-4" />
               )}
             </Button>
           </div>
@@ -145,11 +155,11 @@ const Index = () => {
         <AdMobBanner
           adId={adMobBannerID}
           position="bottom"
-          isTesting={true} // Set to false for production
+          isTesting={true}
         />
       )}
 
-      <Settings />
+      <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
     </div>
   );
 };
