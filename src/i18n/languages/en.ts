@@ -1,4 +1,3 @@
-
 import { Translation } from '../types';
 
 export const en: Translation = {
@@ -74,5 +73,9 @@ export const en: Translation = {
   premiumUser: "Premium User",
   watermarkAutomaticallyRemoved: "Watermark automatically removed",
   welcomeToPremium: "Welcome to Premium!",
-  youAreNowPremiumUser: "You are now a Premium user and won't see watermarks"
+  youAreNowPremiumUser: "You are now a Premium user and won't see watermarks",
+  permissionRequired: "Permission Required",
+  storagePermissionNeeded: "This app needs permission to access your photos. Please grant it to continue.",
+  permissionRequestFailed: "Failed to request permissions. Please enable them in your device settings.",
+  requestingPermissions: "Requesting permissions...",
 };

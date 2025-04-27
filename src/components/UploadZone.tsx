@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Upload } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useStoragePermission } from "@/hooks/useStoragePermission";
+import { Capacitor } from '@capacitor/core';
 
 interface UploadZoneProps {
   onImageSelected: (imageUrl: string, fileName: string) => void;
@@ -12,8 +14,18 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const { t } = useTranslation();
+  const { checkAndRequestPermissions, isRequestingPermission } = useStoragePermission();
+  const isMobileDevice = Capacitor.isNativePlatform();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // En dispositivos móviles, verificar permisos primero
+    if (isMobileDevice) {
+      const hasPermission = await checkAndRequestPermissions();
+      if (!hasPermission) {
+        return;
+      }
+    }
+
     const file = event.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -34,10 +46,18 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+    
+    // En dispositivos móviles, verificar permisos primero
+    if (isMobileDevice) {
+      const hasPermission = await checkAndRequestPermissions();
+      if (!hasPermission) {
+        return;
+      }
+    }
     
     const file = e.dataTransfer.files?.[0];
     if (file) {
@@ -45,6 +65,18 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
       setSelectedFileName(file.name);
       onImageSelected(imageUrl, file.name);
     }
+  };
+
+  const handleButtonClick = async () => {
+    // En dispositivos móviles, verificar permisos primero
+    if (isMobileDevice) {
+      const hasPermission = await checkAndRequestPermissions();
+      if (!hasPermission) {
+        return;
+      }
+    }
+
+    document.getElementById('fileInput')?.click();
   };
 
   return (
@@ -69,15 +101,17 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
           text-base sm:text-lg font-medium text-white
           rounded-lg
         `}
-        onClick={() => document.getElementById('fileInput')?.click()}
+        onClick={handleButtonClick}
+        disabled={isRequestingPermission}
       >
         <Upload className="w-6 h-6 flex-shrink-0" />
         <span className="truncate">
-          {selectedFileName 
-            ? `Selected: ${selectedFileName.length > 20 
-                ? selectedFileName.substring(0, 17) + '...' 
-                : selectedFileName}`
-            : t('selectImageToEdit')}
+          {isRequestingPermission ? t('requestingPermissions') : 
+            selectedFileName 
+              ? `Selected: ${selectedFileName.length > 20 
+                  ? selectedFileName.substring(0, 17) + '...' 
+                  : selectedFileName}`
+              : t('selectImageToEdit')}
         </span>
       </Button>
       <input

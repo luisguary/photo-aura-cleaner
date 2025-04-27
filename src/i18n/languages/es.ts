@@ -1,4 +1,3 @@
-
 import { Translation } from '../types';
 
 export const es: Translation = {
@@ -74,5 +73,9 @@ export const es: Translation = {
   premiumUser: "Usuario Premium",
   watermarkAutomaticallyRemoved: "Marca de agua eliminada automáticamente",
   welcomeToPremium: "¡Bienvenido a Premium!",
-  youAreNowPremiumUser: "Ahora eres un usuario Premium y no verás marcas de agua"
+  youAreNowPremiumUser: "Ahora eres un usuario Premium y no verás marcas de agua",
+  permissionRequired: "Permiso Requerido",
+  storagePermissionNeeded: "Esta aplicación necesita permiso para acceder a tus fotos. Por favor otórgalo para continuar.",
+  permissionRequestFailed: "Error al solicitar permisos. Por favor, habilítalos en la configuración de tu dispositivo.",
+  requestingPermissions: "Solicitando permisos...",
 };

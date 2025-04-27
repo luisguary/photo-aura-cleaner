@@ -10,6 +10,11 @@ const config: CapacitorConfig = {
     CapacitorCommunityAdmob: {
       androidApplicationId: 'ca-app-pub-1145055690439051~8510004230',
       iosApplicationId: 'ca-app-pub-1145055690439051~8510004230',
+    },
+    // Agregamos configuración para los permisos de almacenamiento
+    Filesystem: {
+      readPermission: true,
+      writePermission: true
     }
   },
   server: {
@@ -19,4 +24,3 @@ const config: CapacitorConfig = {
 };
 
 export default config;
-
