@@ -72,7 +72,11 @@ export type TranslationKey =
   | 'premiumUser'
   | 'watermarkAutomaticallyRemoved'
   | 'welcomeToPremium'
-  | 'youAreNowPremiumUser';
+  | 'youAreNowPremiumUser'
+  | 'permissionRequired'
+  | 'storagePermissionNeeded'
+  | 'permissionRequestFailed'
+  | 'requestingPermissions';
 
 export type Translation = {
   [key in TranslationKey]: string;

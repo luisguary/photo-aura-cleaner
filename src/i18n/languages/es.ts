@@ -1,3 +1,4 @@
+
 import { Translation } from '../types';
 
 export const es: Translation = {
