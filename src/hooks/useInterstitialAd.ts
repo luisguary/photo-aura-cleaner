@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { useCallback } from 'react';
 
 export const useInterstitialAd = () => {
-  const adId = 'ca-app-pub-1145055690439051/2604438417';
+  const adId = 'ca-app-pub-1145055690439051/4830613670';
   const isMobileDevice = Capacitor.isNativePlatform();
 
   const showInterstitial = useCallback(async () => {
@@ -13,20 +13,19 @@ export const useInterstitialAd = () => {
     try {
       const options: AdOptions = {
         adId,
-        isTesting: false, // Set to false for production
+        isTesting: false,
       };
 
       // Prepare the interstitial
       await AdMob.prepareInterstitial(options);
       
-      // Show the interstitial ad without checking readiness
-      // The prepare function ensures the ad is ready before proceeding
+      // Show the interstitial ad
       await AdMob.showInterstitial();
     } catch (error) {
       console.error('Error showing interstitial ad:', error);
-      // Silently fail to not interrupt user experience
     }
   }, [isMobileDevice]);
 
   return { showInterstitial };
 };
+

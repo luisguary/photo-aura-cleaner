@@ -8,8 +8,8 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     CapacitorCommunityAdmob: {
-      androidApplicationId: 'ca-app-pub-1145055690439051~1234567890',
-      iosApplicationId: 'ca-app-pub-1145055690439051~0987654321',
+      androidApplicationId: 'ca-app-pub-1145055690439051~8510004230',
+      iosApplicationId: 'ca-app-pub-1145055690439051~8510004230',
     }
   },
   server: {

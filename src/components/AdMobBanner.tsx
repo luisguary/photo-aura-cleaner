@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
@@ -10,9 +9,9 @@ interface AdMobBannerProps {
 }
 
 export const AdMobBanner: React.FC<AdMobBannerProps> = ({ 
-  adId, 
+  adId = 'ca-app-pub-1145055690439051/2327498019', 
   position = 'bottom', 
-  isTesting = true 
+  isTesting = false 
 }) => {
   const [adInitialized, setAdInitialized] = useState(false);
   const [adError, setAdError] = useState<string | null>(null);

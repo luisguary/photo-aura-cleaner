@@ -8,7 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 export const useRewardedAd = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const adId = 'ca-app-pub-1145055690439051/2604438417';
+  const adId = 'ca-app-pub-1145055690439051/9153002066';
   const isMobileDevice = Capacitor.isNativePlatform();
 
   const showRewardedAd = useCallback(async (): Promise<boolean> => {
@@ -30,7 +30,6 @@ export const useRewardedAd = () => {
       setIsLoading(false);
       
       // Check if the user completed watching the ad
-      // Using the appropriate property from AdMobRewardItem
       if (result && result.type === 'reward_video' && result.amount > 0) {
         toast({
           title: t('success'),
@@ -59,3 +58,4 @@ export const useRewardedAd = () => {
 
   return { showRewardedAd, isLoading };
 };
+
