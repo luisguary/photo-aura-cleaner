@@ -1,13 +1,18 @@
 
 // Versión del cache
-const CACHE_NAME = 'quitar-fondo-pro-v1';
+const CACHE_NAME = 'quitar-fondo-pro-v2';
 
 // Archivos a cachear
 const urlsToCache = [
   '/',
   '/index.html',
   '/icon-192.png',
+  '/icon-256.png',
+  '/icon-384.png',
   '/icon-512.png',
+  '/icon-1024.png',
+  '/maskable-icon.png',
+  '/screenshot1.png',
   '/manifest.json'
 ];
 
