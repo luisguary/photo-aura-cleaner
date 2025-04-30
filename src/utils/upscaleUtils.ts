@@ -8,9 +8,12 @@ export const upscaleImage = async (
   scale: number = 2
 ): Promise<Blob | null> => {
   try {
-    // This is a placeholder implementation
-    // In a real application, you would use a real upscaling algorithm or API
-    
+    // Validate input blob before processing
+    if (!imageBlob || imageBlob.size === 0) {
+      console.error('Invalid image blob: empty or null');
+      return null;
+    }
+
     // Create an image from the blob
     const img = new Image();
     const imageUrl = URL.createObjectURL(imageBlob);
@@ -22,6 +25,7 @@ export const upscaleImage = async (
         const ctx = canvas.getContext('2d');
         
         if (!ctx) {
+          console.error('Failed to get canvas context');
           URL.revokeObjectURL(imageUrl);
           resolve(null);
           return;
@@ -36,18 +40,26 @@ export const upscaleImage = async (
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
-        // Convert canvas to blob
+        // Convert canvas to blob with PNG format for better quality
         canvas.toBlob((resultBlob) => {
           URL.revokeObjectURL(imageUrl);
+          if (!resultBlob) {
+            console.error('Failed to create result blob');
+            resolve(null);
+            return;
+          }
           resolve(resultBlob);
-        }, 'image/png', 0.95); // Use PNG format for better quality
+        }, 'image/png', 1.0); // Using maximum quality
       };
       
-      img.onerror = () => {
+      img.onerror = (error) => {
+        console.error('Error loading image:', error);
         URL.revokeObjectURL(imageUrl);
         resolve(null);
       };
       
+      // Set crossOrigin to anonymous to handle CORS issues
+      img.crossOrigin = 'anonymous';
       img.src = imageUrl;
     });
   } catch (error) {

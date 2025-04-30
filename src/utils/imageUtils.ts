@@ -30,6 +30,11 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
   try {
     console.log('Starting background removal with Remove.bg API...');
     
+    // Validate input
+    if (!imageElement || !imageElement.complete) {
+      throw new Error('Invalid image element');
+    }
+    
     // Convert image to blob
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -76,9 +81,18 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
 
 export const loadImage = (file: Blob): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
+    if (!file || file.size === 0) {
+      reject(new Error('Invalid image file: empty or null'));
+      return;
+    }
+    
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = (e) => {
+      console.error('Error loading image:', e);
+      reject(new Error('Failed to load image'));
+    };
+    img.crossOrigin = 'anonymous';
     img.src = URL.createObjectURL(file);
   });
 };
