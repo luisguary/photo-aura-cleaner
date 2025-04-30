@@ -11,7 +11,6 @@ import { DeblurButton } from '../components/DeblurButton';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
-import { ScaleWithAIButton } from '@/components/ScaleWithAIButton';
 import { AdMobBanner } from '@/components/AdMobBanner';
 import { Capacitor } from '@capacitor/core';
 
@@ -118,7 +117,7 @@ const Index = () => {
             {!selectedImage ? (
               <div className="space-y-4">
                 <UploadZone onImageSelected={handleImageSelected} />
-                <div className="flex flex-col md:flex-row justify-center gap-4 mt-4">
+                <div className="flex justify-center mt-4">
                   <DeblurButton
                     isPremium={false}
                     onImageProcessed={(url) => {
@@ -126,13 +125,6 @@ const Index = () => {
                       setSelectedFileName("enhanced-image.jpg");
                     }}
                     className="w-full md:w-auto"
-                  />
-                  <ScaleWithAIButton 
-                    onImageProcessed={(url) => {
-                      setSelectedImage(url);
-                      setSelectedFileName("scaled-image.jpg");
-                    }}
-                    isPremium={false}
                   />
                 </div>
               </div>
