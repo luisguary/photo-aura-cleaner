@@ -54,7 +54,7 @@ export const en: Translation = {
   retry: "Retry",
   error: "Error",
   share: "Share",
-  selectImageToEdit: "Select an image to edit",
+  selectImageToEdit: "Upload Image",
   fixBlurryPhoto: "Fix Blurry Photo",
   fixBlurryPhotoAI: "Fix Blurry Photo with AI",
   watchAdToFix: "Watch Ad to Fix",

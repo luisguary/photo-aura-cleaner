@@ -55,7 +55,7 @@ export const es: Translation = {
   language: "Idioma",
   english: "Inglés",
   spanish: "Español",
-  selectImageToEdit: "Selecciona una imagen para editar",
+  selectImageToEdit: "Subir imagen",
   fixBlurryPhoto: "Arreglar Foto Borrosa",
   fixBlurryPhotoAI: "Arreglar Foto Borrosa con IA",
   watchAdToFix: "Ver Anuncio para Arreglar",
