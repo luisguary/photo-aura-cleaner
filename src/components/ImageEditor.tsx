@@ -40,7 +40,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
     setIsEditDialogOpen,
     setSelectedBackground,
     handleRemoveBackground,
-    handleUpscaleRequest,
     handleWatermarkRemoveClick,
     handleWatchAd,
     handleAdWatched,
@@ -89,7 +88,6 @@ const ImageEditor = ({ initialImage, fileName, onReset }: ImageEditorProps) => {
 
       {!isProcessing && (
         <ImageActions 
-          onUpscale={handleUpscaleRequest}
           onCrop={() => setIsCropDialogOpen(true)}
           onResize={() => setIsResizeDialogOpen(true)}
           onEdit={() => setIsEditDialogOpen(true)}
