@@ -2,6 +2,7 @@
 {
   "name": "Quitar Fondo Pro",
   "short_name": "QuitarFondo",
+  "description": "Aplicación profesional para eliminar fondos de imágenes",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -48,12 +49,31 @@
     {
       "src": "/screenshot1.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pantalla principal de Quitar Fondo Pro"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Quitar Fondo Pro en móvil"
     }
   ],
-  "orientation": "portrait",
-  "categories": ["photo", "utilities"],
+  "orientation": "any",
+  "categories": ["photo", "utilities", "productivity"],
   "lang": "es",
   "dir": "ltr",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "shortcuts": [
+    {
+      "name": "Subir Imagen",
+      "short_name": "Subir",
+      "description": "Subir una nueva imagen",
+      "url": "/?action=upload",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
