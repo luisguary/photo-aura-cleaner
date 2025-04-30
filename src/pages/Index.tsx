@@ -115,9 +115,9 @@ const Index = () => {
         <Card className="bg-white dark:bg-[#2A2F3C] backdrop-blur-sm shadow-xl border-0">
           <CardContent className="p-6">
             {!selectedImage ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <UploadZone onImageSelected={handleImageSelected} />
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-4">
                   <DeblurButton
                     isPremium={false}
                     onImageProcessed={(url) => {
