@@ -111,7 +111,7 @@ const UploadZone = ({ onImageSelected }: UploadZoneProps) => {
               ? `Selected: ${selectedFileName.length > 20 
                   ? selectedFileName.substring(0, 17) + '...' 
                   : selectedFileName}`
-              : t('selectImageToEdit')}
+              : t('uploadImage')}
         </span>
       </Button>
       <input
