@@ -40,7 +40,7 @@ export const upscaleImage = async (
         canvas.toBlob((resultBlob) => {
           URL.revokeObjectURL(imageUrl);
           resolve(resultBlob);
-        }, 'image/jpeg', 0.95);
+        }, 'image/png', 0.95); // Use PNG format for better quality
       };
       
       img.onerror = () => {
