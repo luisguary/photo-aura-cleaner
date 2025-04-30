@@ -71,7 +71,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
 
       {/* Upload Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" closeButton={false}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ArrowUpCircle className="w-5 h-5 text-[#9b87f5]" /> {t('upscaleWithAI')}
