@@ -7,7 +7,6 @@ import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Moon, Sun, Crown, Settings } from 'lucide-react';
 import { Settings as SettingsDialog } from '../components/Settings';
-import { DeblurButton } from '../components/DeblurButton';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -117,16 +116,6 @@ const Index = () => {
             {!selectedImage ? (
               <div className="space-y-4">
                 <UploadZone onImageSelected={handleImageSelected} />
-                <div className="flex justify-center mt-4">
-                  <DeblurButton
-                    isPremium={false}
-                    onImageProcessed={(url) => {
-                      setSelectedImage(url);
-                      setSelectedFileName("enhanced-image.jpg");
-                    }}
-                    className="w-full md:w-auto"
-                  />
-                </div>
               </div>
             ) : (
               <ImageEditor
