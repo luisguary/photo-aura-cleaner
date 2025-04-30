@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Button } from './ui/button';
 import { Edit, X } from 'lucide-react';
-import { applyImageEdits } from '@/utils/editUtils';
+import { applyImageEdits, generatePreviewUrl } from '@/utils/editUtils';
 import { toast } from './ui/use-toast';
 import { Slider } from './ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -31,12 +31,39 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
     filter: 'none'
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [activeTab, setActiveTab] = useState("original");
+
+  // Clean up previous preview URL when dialog closes or when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+  
+  // Reset settings when dialog opens with a new image
+  useEffect(() => {
+    if (open) {
+      handleReset();
+    }
+  }, [open, imageUrl]);
+
+  // Generate a new preview when settings change
+  useEffect(() => {
+    if (!open || !imageUrl) return;
+    
+    // Generate a temporary preview instantly for responsive UI
+    const livePreviewUrl = generatePreviewUrl(imageUrl, settings);
+    setPreviewUrl(livePreviewUrl);
+  }, [settings, imageUrl, open]);
 
   const handleSettingChange = (setting: keyof EditSettings, value: number | string) => {
     setSettings((prev) => ({
       ...prev,
       [setting]: value
     }));
+    setActiveTab("preview"); // Switch to preview tab automatically
   };
 
   const handleFilterChange = (filter: string) => {
@@ -44,20 +71,27 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
       ...prev,
       filter
     }));
+    setActiveTab("preview"); // Switch to preview tab automatically
   };
 
   const generatePreview = async () => {
     try {
       setIsProcessing(true);
       
-      // Clean up previous preview URL if it exists
-      if (previewUrl) {
+      // Clean up previous preview URL if it's a blob URL
+      if (previewUrl && previewUrl.startsWith('blob:')) {
         URL.revokeObjectURL(previewUrl);
       }
       
       const editedBlob = await applyImageEdits(imageUrl, settings);
       const newPreviewUrl = URL.createObjectURL(editedBlob);
       setPreviewUrl(newPreviewUrl);
+      setActiveTab("preview");
+      
+      toast({
+        title: "Success",
+        description: "Preview generated successfully",
+      });
     } catch (error) {
       console.error('Error generating preview:', error);
       toast({
@@ -71,22 +105,58 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
   };
 
   const handleReset = () => {
+    // Reset all settings to default
     setSettings({
       brightness: 0,
       contrast: 0,
       saturation: 0,
       filter: 'none'
     });
-    if (previewUrl) {
+
+    // Clean up previous preview URL if it's a blob URL
+    if (previewUrl && previewUrl.startsWith('blob:')) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
+    
+    setActiveTab("original");
+    
+    toast({
+      title: "Settings Reset",
+      description: "All edit settings have been reset to default values.",
+    });
   };
 
-  const handleEditComplete = () => {
+  const handleEditComplete = async () => {
+    if (!previewUrl) {
+      // If no preview exists yet, generate one first
+      await generatePreview();
+    }
+    
     if (previewUrl) {
-      onEditComplete(previewUrl);
-      onOpenChange(false);
+      // Apply the final edits by creating a proper blob
+      try {
+        setIsProcessing(true);
+        const finalEditedBlob = await applyImageEdits(imageUrl, settings);
+        const finalUrl = URL.createObjectURL(finalEditedBlob);
+        
+        // Call the parent component with the edited image URL
+        onEditComplete(finalUrl);
+        onOpenChange(false);
+        
+        toast({
+          title: "Success",
+          description: "Image edited successfully!",
+        });
+      } catch (error) {
+        console.error('Error applying edits:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to apply edits to the image.",
+        });
+        setIsProcessing(false);
+      }
     } else {
       toast({
         variant: "destructive",
@@ -96,8 +166,21 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
     }
   };
 
+  const handleCancel = () => {
+    // Clean up the preview URL before closing
+    if (previewUrl && previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      if (!isOpen && previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      onOpenChange(isOpen);
+    }}>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center">
@@ -198,7 +281,7 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
           </div>
           
           <div className="flex-1">
-            <Tabs defaultValue="original">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="original">Original</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -236,14 +319,14 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
         <DialogFooter className="flex justify-between mt-4">
           <Button 
             variant="outline" 
-            onClick={() => onOpenChange(false)}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
           <Button 
             variant="default"
             onClick={handleEditComplete}
-            disabled={!previewUrl}
+            disabled={isProcessing}
           >
             Apply Edits
           </Button>
