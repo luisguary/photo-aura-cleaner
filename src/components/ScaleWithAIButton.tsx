@@ -1,7 +1,7 @@
 
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
-import { ArrowUpCircle, Upload, X } from 'lucide-react';
+import { ArrowUpCircle, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { toast } from '@/hooks/use-toast';
@@ -104,15 +104,7 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
               </label>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-4 top-4 rounded-full" 
-            onClick={() => setIsDialogOpen(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
+          {/* Eliminamos el botón "X" manual que estaba causando la duplicación */}
         </DialogContent>
       </Dialog>
 
