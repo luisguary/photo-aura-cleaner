@@ -104,7 +104,6 @@ export const ScaleWithAIButton = ({ onImageProcessed, isPremium }: ScaleWithAIBu
               </label>
             </div>
           </div>
-          {/* Eliminamos el botón "X" manual que estaba causando la duplicación */}
         </DialogContent>
       </Dialog>
 
