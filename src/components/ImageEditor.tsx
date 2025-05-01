@@ -10,7 +10,7 @@ import BackgroundSelector from './BackgroundSelector';
 import ImageActions from './ImageActions';
 import CropDialog from './CropDialog';
 import ResizeDialog from './ResizeDialog';
-import EditDialog from './EditDialog';
+import EditDialog from './edit-dialog/EditDialog';
 import { ImagePreview } from './image-editor/ImagePreview';
 import { DownloadButtons } from './image-editor/DownloadButtons';
 import { WatermarkDialog } from './image-editor/WatermarkDialog';
