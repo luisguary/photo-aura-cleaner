@@ -22,11 +22,11 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="px-4 pb-8 pt-2 max-h-[85vh] overflow-y-auto">
-          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-4" />
-          <DrawerHeader>
-            <DrawerTitle className="flex items-center">
-              <Edit className="mr-2 h-4 w-4" />
+        <DrawerContent className="px-3 pb-4 pt-2 max-h-[90vh]">
+          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-2" />
+          <DrawerHeader className="px-0 py-1">
+            <DrawerTitle className="flex items-center text-base">
+              <Edit className="mr-1 h-3.5 w-3.5" />
               Edit Image
             </DrawerTitle>
           </DrawerHeader>

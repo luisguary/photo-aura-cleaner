@@ -48,9 +48,9 @@ export const EditDialogContent = ({
 
   return (
     <>
-      <div className={`${isMobile ? 'flex flex-col gap-4' : 'flex flex-col md:flex-row gap-6'} mt-4`}>
-        <div className="flex-1">
-          <h3 className="text-sm font-medium mb-4">Adjustments</h3>
+      <div className={`${isMobile ? 'flex flex-col gap-3' : 'flex flex-col md:flex-row gap-6'} mt-2`}>
+        <div className={`${isMobile ? 'w-full' : 'flex-1'}`}>
+          <h3 className="text-xs font-medium mb-2 sm:text-sm sm:mb-3">Adjustments</h3>
           <EditControls
             settings={settings}
             onSettingsChange={handleSettingChange}
@@ -61,7 +61,7 @@ export const EditDialogContent = ({
           />
         </div>
         
-        <div className="flex-1">
+        <div className={`${isMobile ? 'w-full' : 'flex-1'}`}>
           <ImagePreviewPanel 
             imageUrl={imageUrl} 
             previewUrl={previewUrl} 
@@ -71,7 +71,7 @@ export const EditDialogContent = ({
         </div>
       </div>
       
-      <div className="flex justify-between mt-4 gap-2">
+      <div className="flex justify-between mt-3 sm:mt-4 gap-2">
         <Button 
           variant="outline" 
           onClick={onCancel}
