@@ -1,6 +1,6 @@
 
 // Versión del cache
-const CACHE_NAME = 'quitar-fondo-pro-v3';
+const CACHE_NAME = 'quitar-fondo-pro-v4';
 
 // Archivos a cachear
 const urlsToCache = [
@@ -39,7 +39,7 @@ self.addEventListener('fetch', function(event) {
         }
         
         // No está en cache - obtener de red
-        return fetch(event.request)
+        return fetch(event.request.clone())
           .then(function(response) {
             // Verificar si la respuesta es válida
             if(!response || response.status !== 200 || response.type !== 'basic') {
@@ -56,6 +56,12 @@ self.addEventListener('fetch', function(event) {
               });
               
             return response;
+          })
+          .catch(function() {
+            // Si hay un error en la red, intentar servir una página offline
+            if (event.request.mode === 'navigate') {
+              return caches.match('/');
+            }
           });
       })
   );

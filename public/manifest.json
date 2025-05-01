@@ -3,7 +3,7 @@
   "name": "Quitar Fondo Pro",
   "short_name": "QuitarFondo",
   "description": "Aplicación profesional para eliminar fondos de imágenes",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#317EFB",
