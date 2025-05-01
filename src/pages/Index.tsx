@@ -51,19 +51,19 @@ const Index = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-4 md:p-8`}>
+    <div className={`min-h-screen bg-white dark:bg-[#1A1F2C] transition-colors duration-200 p-2 sm:p-4 md:p-8`}>
       <div className="max-w-5xl mx-auto">
         {/* Logo and header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-4 md:mb-8">
           <div className="flex items-center">
-            <h1 className="text-2xl md:text-3xl font-bold text-brand-blue dark:text-white">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-brand-blue dark:text-white">
               {t('appTitle')}
             </h1>
           </div>
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             <Button
               onClick={() => navigate('/pricing')}
-              className="bg-primary text-white flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="bg-primary text-white flex items-center gap-1 sm:gap-2 hover:scale-105 transition-all duration-300 text-xs sm:text-sm"
               size="sm"
             >
               <motion.div
@@ -76,9 +76,9 @@ const Index = () => {
                   ease: "easeInOut"
                 }}
               >
-                <Crown className="h-4 w-4" />
+                <Crown className="h-3 w-3 sm:h-4 sm:w-4" />
               </motion.div>
-              Precios
+              <span className="hidden xs:inline">Precios</span>
             </Button>
             <Button
               variant="ghost"
@@ -112,7 +112,7 @@ const Index = () => {
         </div>
         
         <Card className="bg-white dark:bg-[#2A2F3C] backdrop-blur-sm shadow-xl border-0">
-          <CardContent className="p-6">
+          <CardContent className="p-2 sm:p-4 md:p-6">
             {!selectedImage ? (
               <div className="space-y-4">
                 <UploadZone onImageSelected={handleImageSelected} />
@@ -133,11 +133,13 @@ const Index = () => {
 
       {/* AdMob Banner */}
       {isMobileDevice && (
-        <AdMobBanner
-          adId={adMobBannerID}
-          position="bottom"
-          isTesting={true}
-        />
+        <div className="fixed bottom-0 left-0 right-0 z-10">
+          <AdMobBanner
+            adId={adMobBannerID}
+            position="bottom"
+            isTesting={true}
+          />
+        </div>
       )}
 
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />

@@ -22,15 +22,17 @@ export const ImagePreview = ({
           customBackground ? `url(${customBackground})` : 'none',
         backgroundSize: selectedBackground === 'transparent' ? '20px 20px' : 'cover',
         backgroundPosition: selectedBackground === 'transparent' ? '0 0, 0 10px, 10px -10px, -10px 0px' : 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100px'
       }}
     >
       <img
         src={image}
         alt="Image being edited"
-        className="max-w-full h-auto"
+        className="max-w-full w-full h-auto object-contain"
         style={{
           opacity: isProcessing ? 0.5 : 1,
+          maxHeight: '70vh'
         }}
       />
       {isProcessing && <ProcessingOverlay progress={progress} />}
