@@ -26,7 +26,7 @@ export const ImagePreviewPanel = ({
           <img 
             src={imageUrl} 
             alt="Original image" 
-            className="max-w-full h-auto max-h-[250px] sm:max-h-[300px] md:max-h-[400px] mx-auto object-contain" 
+            className="max-w-full h-auto max-h-[180px] sm:max-h-[250px] md:max-h-[350px] mx-auto object-contain" 
           />
         </div>
       </TabsContent>
@@ -37,10 +37,10 @@ export const ImagePreviewPanel = ({
             <img 
               src={previewUrl} 
               alt="Edited preview" 
-              className="max-w-full h-auto max-h-[250px] sm:max-h-[300px] md:max-h-[400px] mx-auto object-contain" 
+              className="max-w-full h-auto max-h-[180px] sm:max-h-[250px] md:max-h-[350px] mx-auto object-contain" 
             />
           ) : (
-            <div className="flex items-center justify-center h-[150px] sm:h-[200px] md:h-[250px] bg-gray-50 text-gray-400 text-xs sm:text-sm">
+            <div className="flex items-center justify-center h-[120px] sm:h-[180px] md:h-[220px] bg-gray-50 text-gray-400 text-xs sm:text-sm">
               No preview generated yet
             </div>
           )}
@@ -49,4 +49,3 @@ export const ImagePreviewPanel = ({
     </Tabs>
   );
 };
-

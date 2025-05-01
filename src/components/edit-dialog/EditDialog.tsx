@@ -22,7 +22,7 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="px-3 pb-4 pt-2 max-h-[90vh]">
+        <DrawerContent className="px-3 pb-4 pt-2">
           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-2" />
           <DrawerHeader className="px-0 py-1">
             <DrawerTitle className="flex items-center text-base">
@@ -43,7 +43,7 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <Edit className="mr-2 h-4 w-4" />
@@ -62,4 +62,3 @@ const EditDialog = ({ open, onOpenChange, imageUrl, onEditComplete }: EditDialog
 };
 
 export default EditDialog;
-

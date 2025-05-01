@@ -27,7 +27,7 @@ export const EditControls = ({
   isMobile
 }: EditControlsProps) => {
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-2 sm:space-y-3">
       <div className="space-y-1 sm:space-y-2">
         <div className="flex justify-between">
           <label htmlFor="brightness" className="text-xs sm:text-sm">Brightness</label>
@@ -77,7 +77,7 @@ export const EditControls = ({
       </div>
       
       <div className="space-y-1 sm:space-y-2">
-        <label className="text-xs sm:text-sm">Filters</label>
+        <label className="text-xs sm:text-sm block">Filters</label>
         <div className="grid grid-cols-3 gap-1 sm:gap-2">
           <Button
             variant={settings.filter === 'none' ? "default" : "outline"}
@@ -127,4 +127,3 @@ export const EditControls = ({
     </div>
   );
 };
-
