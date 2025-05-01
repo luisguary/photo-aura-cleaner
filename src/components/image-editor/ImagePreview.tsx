@@ -27,11 +27,17 @@ export const ImagePreview = ({
         setIsImageLoaded(true);
       };
       img.src = image;
+    } else {
+      setIsImageLoaded(false);
     }
+    
+    return () => {
+      setIsImageLoaded(false);
+    };
   }, [image]);
 
   return (
-    <div className="relative rounded-lg overflow-hidden border border-gray-200">
+    <div className="relative rounded-lg overflow-hidden border border-gray-200 max-w-full">
       <div 
         className="relative w-full" 
         style={{ 
@@ -52,7 +58,7 @@ export const ImagePreview = ({
               className="w-full h-full object-contain"
               style={{
                 opacity: isProcessing ? 0.5 : 1,
-                maxHeight: '65vh',
+                maxHeight: '60vh',
               }}
             />
             {isProcessing && <ProcessingOverlay progress={progress} />}

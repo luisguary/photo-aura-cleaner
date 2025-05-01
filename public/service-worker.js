@@ -1,6 +1,6 @@
 
 // Versión del cache
-const CACHE_NAME = 'quitar-fondo-pro-v4';
+const CACHE_NAME = 'quitar-fondo-pro-v5';
 
 // Archivos a cachear
 const urlsToCache = [
@@ -26,6 +26,7 @@ self.addEventListener('install', function(event) {
         return cache.addAll(urlsToCache);
       })
   );
+  self.skipWaiting();
 });
 
 // Estrategia cache-first para peticiones fetch
@@ -62,6 +63,7 @@ self.addEventListener('fetch', function(event) {
             if (event.request.mode === 'navigate') {
               return caches.match('/');
             }
+            return new Response('Sin conexión a internet');
           });
       })
   );
@@ -80,6 +82,8 @@ self.addEventListener('activate', function(event) {
           }
         })
       );
+    }).then(function() {
+      return self.clients.claim();
     })
   );
 });
