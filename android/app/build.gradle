@@ -40,15 +40,16 @@ dependencies {
     
     // AdMob dependency
     implementation 'com.google.android.gms:play-services-ads:22.6.0'
+    
+    // Firebase dependencies
+    implementation platform('com.google.firebase:firebase-bom:32.7.3')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
 }
 
 apply from: 'capacitor.build.gradle'
 
-try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
-        apply plugin: 'com.google.gms.google-services'
-    }
-} catch (Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
-}
+// Apply Google Services plugin at the end of the file
+apply plugin: 'com.google.gms.google-services'
