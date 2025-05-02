@@ -5,21 +5,26 @@ import ImageEditor from '../components/ImageEditor';
 import UploadZone from '../components/UploadZone';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Moon, Sun, Crown, Settings } from 'lucide-react';
+import { Moon, Sun, Crown, Settings, User } from 'lucide-react';
 import { Settings as SettingsDialog } from '../components/Settings';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { AdMobBanner } from '@/components/AdMobBanner';
 import { Capacitor } from '@capacitor/core';
+import { AuthDialog } from '@/components/auth/AuthDialog';
+import { useAuth } from '@/contexts/AuthContext';
+import { UserProfile } from '@/components/auth/UserProfile';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [showSettings, setShowSettings] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   // Check if we're running on a device
   const isMobileDevice = Capacitor.isNativePlatform();
@@ -80,6 +85,21 @@ const Index = () => {
               </motion.div>
               <span className="hidden xs:inline">Precios</span>
             </Button>
+            
+            {currentUser ? (
+              <UserProfile />
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAuthDialog(true)}
+                className="flex items-center gap-1"
+              >
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">Iniciar sesión</span>
+              </Button>
+            )}
+            
             <Button
               variant="ghost"
               size="icon"
@@ -143,6 +163,7 @@ const Index = () => {
       )}
 
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
+      <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />
     </div>
   );
 };
