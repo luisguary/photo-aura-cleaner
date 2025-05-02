@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Smartphone } from "lucide-react";
+import { Smartphone, Mail } from "lucide-react";
 
 interface RegisterFormProps {
   onToggleForm: () => void;
