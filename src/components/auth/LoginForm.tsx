@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Google, Mail } from "lucide-react";
+import { Mail, Smartphone } from "lucide-react";
 
 interface LoginFormProps {
   onToggleForm: () => void;
@@ -100,7 +100,7 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
           className="w-full mt-4"
           disabled={loading}
         >
-          <Google className="mr-2 h-4 w-4" />
+          <Smartphone className="mr-2 h-4 w-4" />
           {loading ? "Cargando..." : "Iniciar sesión con Google"}
         </Button>
       </CardContent>
